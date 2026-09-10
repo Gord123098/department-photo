@@ -12,6 +12,17 @@ Interactive, multi-scale deep zoom viewer for the department camera array, regis
 
 ---
 
+## Multi-Scale Demonstration
+
+![Multiscale Viewer Layer Footprints](assets/multiscale_layers_overview.jpg)
+*Multi-scale registration showing the wide color context frame (8FF9), 12 mm stitched tier footprint, and high-resolution close detail (A + B) telephoto array over the crowd.*
+
+### Telephoto Sampling Boundary
+![Telephoto Resolution Transition](assets/telephoto_resolution_transition.jpg)
+*Deep zoom crop (15.41×) capturing the transition boundary where the high-resolution monochrome telephoto array has sampled vs. the outer wide context.*
+
+---
+
 ## Key Features
 
 1. **Multi-Scale Pyramid (1.00× to 4.80×)**
