@@ -37,7 +37,7 @@
     
     /* Topbar */
     .topbar {
-      min-width: 0; display: grid; grid-template-columns: 280px minmax(0, 1fr) auto;
+      min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center; border-bottom: 1px solid var(--line); background: #090d12;
     }
     .brand { height: 100%; display: flex; align-items: center; gap: 11px; padding: 0 16px; border-right: 1px solid var(--line); }
@@ -86,9 +86,9 @@
     .reset-button:hover { border-color: #637181; background: var(--raised-hover); color: var(--text); }
     
     /* Workspace */
-    .workspace { min-height: 0; height: 100%; display: grid; grid-template-columns: 320px minmax(0, 1fr); overflow: hidden; }
-    aside { min-height: 0; height: 100%; display: flex; flex-direction: column; background: var(--panel); border-right: 1px solid var(--line); overflow: hidden; }
-    .scroll { flex: 1; min-height: 0; overflow-y: auto; scrollbar-color: #30363d transparent; }
+    .workspace { min-height: 0; height: 100%; display: grid; grid-template-columns: 310px minmax(0, 1fr); overflow: hidden; position: relative; }
+    aside { min-height: 0; height: 100%; width: 310px; min-width: 310px; max-width: 310px; display: flex; flex-direction: column; background: var(--panel); border-right: 1px solid var(--line); overflow: hidden; }
+    .scroll { flex: 1 1 0%; min-height: 0; overflow-y: auto; scrollbar-color: #30363d transparent; }
     .section { padding: 13px 14px; border-bottom: 1px solid var(--line); }
     .section-title { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 9px; }
     .section-title h2 { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #b7c0c8; }
@@ -364,238 +364,30 @@
     .loading-copy { color: var(--muted); font-size: 12px; letter-spacing: .04em; }
     .openseadragon-container .navigator { border: 1px solid #30363d !important; background: #0d1117 !important; opacity: .88; }
 
-    /* Mobile Drawer Components */
-    .sidebar-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(2px);
-      z-index: 90;
-    }
-    .sidebar-backdrop.visible {
-      display: block;
-    }
-    .sidebar-toggle-btn {
-      display: none;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 9px;
-      background: var(--raised);
-      border: 1px solid var(--line-strong);
-      border-radius: 5px;
-      color: var(--text);
-      font-size: 11.5px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .sidebar-toggle-btn:hover {
-      background: var(--raised-hover);
-      border-color: var(--accent);
-    }
-    .aside-mobile-header {
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--line);
-      background: #090c10;
-    }
-    .aside-mobile-header span {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #fff;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-    .aside-close-btn {
-      padding: 3px 8px;
-      background: #161b22;
-      border: 1px solid var(--line-strong);
-      border-radius: 4px;
-      color: var(--muted);
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .aside-close-btn:hover {
-      color: #fff;
-      border-color: #f85149;
-    }
-    .mobile-fab-btn {
-      display: none;
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      z-index: 20;
-      padding: 9px 15px;
-      background: #1f6feb;
-      color: #fff;
-      border: 1px solid #388bfd;
-      border-radius: 24px;
-      font-size: 12px;
-      font-weight: 700;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
-      cursor: pointer;
-      align-items: center;
-      gap: 6px;
-    }
-    .mobile-fab-btn:hover {
-      background: #388bfd;
-    }
-
-    /* Desktop Layout (Default >= 881px) */
-    @media (min-width: 881px) {
-      .workspace {
-        min-height: 0;
-        height: 100%;
-        display: grid !important;
-        grid-template-columns: 310px minmax(0, 1fr) !important;
-        position: relative;
-      }
-      aside {
-        min-height: 0;
-        height: 100%;
-        width: 310px !important;
-        position: static !important;
-        transform: none !important;
-        display: flex !important;
-        flex-direction: column;
-        background: var(--panel);
-        border-right: 1px solid var(--line);
-        box-shadow: none !important;
-      }
-      main {
-        min-width: 0;
-        min-height: 0;
-        height: 100%;
-        position: relative !important;
-        background: #050608;
-      }
-      #viewer {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        background: #050608;
-      }
-      .sidebar-backdrop {
-        display: none !important;
-      }
-      .sidebar-toggle-btn {
-        display: none !important;
-      }
-      .mobile-fab-btn {
-        display: none !important;
-      }
-      .aside-mobile-header {
-        display: none !important;
-      }
-    }
-
-    /* Mobile Layout (< 880px) */
-    @media (max-width: 880px) {
-      .sidebar-toggle-btn {
-        display: inline-flex;
-      }
-      .mobile-fab-btn {
-        display: inline-flex;
-      }
+    /* Responsive styling for smaller displays */
+    @media (max-width: 840px) {
       .topbar {
-        grid-template-columns: auto auto minmax(0, 1fr) auto;
         padding: 0 10px;
         gap: 8px;
       }
-      .brand-copy .eyebrow {
-        display: none;
-      }
-      .brand-title {
-        font-size: 12px;
-      }
-      .mode-strip {
-        overflow-x: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        padding: 0 2px;
-      }
-      .mode-strip::-webkit-scrollbar {
-        display: none;
-      }
-      .mode-button {
-        padding: 4px 7px;
-        font-size: 10px;
-        white-space: nowrap;
-      }
-      .rep-strip .rep-btn {
-        padding: 3px 6px;
-        font-size: 10px;
-      }
-      .zoom-readout {
-        display: none;
-      }
-      .reset-button {
-        padding: 4px 6px;
-        font-size: 9.5px;
-      }
-
-      .workspace {
-        display: block;
-        position: relative;
-        height: 100%;
-        width: 100%;
-      }
-      main {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-      }
-      #viewer {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-      }
-      aside {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: min(340px, 86vw);
-        height: 100%;
-        z-index: 100;
-        background: #0d1117;
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.75);
-        transform: translateX(-100%);
-        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      aside.drawer-open {
-        transform: translateX(0);
-      }
-      .aside-mobile-header {
-        display: flex;
-      }
-      .viewport-status {
-        left: 10px;
-        bottom: 10px;
-        max-width: 55%;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        font-size: 9.5px;
-        padding: 3px 6px;
-      }
+      .brand { padding: 0 10px 0 0; }
+      .brand-copy .eyebrow { display: none; }
+      .brand-title { font-size: 12px; }
+      .workspace { grid-template-columns: 270px minmax(0, 1fr); }
+      aside { width: 270px; min-width: 270px; max-width: 270px; }
+      .mode-strip { overflow-x: auto; scrollbar-width: none; }
+      .mode-strip::-webkit-scrollbar { display: none; }
+      .mode-button { padding: 4px 8px; font-size: 11px; }
+      .rep-strip .rep-btn { padding: 3px 7px; font-size: 10.5px; }
+      .zoom-readout { display: none; }
+      .viewport-status { left: 10px; bottom: 10px; font-size: 10px; padding: 4px 8px; max-width: 60%; }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="topbar">
-      <button class="sidebar-toggle-btn" id="mobile-sidebar-toggle" type="button" title="Toggle Layer Controls & Settings">
-        Layers
-      </button>
       <div class="brand">
-        <div class="mark" aria-hidden="true"></div>
         <div class="brand-copy">
           <div class="eyebrow">Arizona Camera Lab · Heterogeneous Rig</div>
           <div class="brand-title">Multiscale Viewer</div>
@@ -621,10 +413,6 @@
 
     <div class="workspace">
       <aside id="sidebar-panel">
-        <div class="aside-mobile-header">
-          <span>Layers &amp; Controls</span>
-          <button type="button" class="aside-close-btn" id="aside-close" title="Close panel">✕</button>
-        </div>
         <div class="scroll">
           <!-- Active Layer Info -->
           <section class="section">
@@ -741,7 +529,6 @@
         <svg id="footprints" aria-hidden="true"></svg>
         <div class="mode-toast" id="mode-toast">Representation: Color Fused</div>
         <div class="viewport-status"><span class="status-dot"></span><span id="status">Loading multiscale array…</span></div>
-        <button class="mobile-fab-btn" id="mobile-fab" type="button" title="Open Layer Controls">Layers</button>
         <div class="loading" id="loading"><div class="loading-copy" id="loading-copy">Loading 0 / 25 layers</div></div>
       </main>
     </div>
@@ -1586,28 +1373,6 @@
         viewer.viewport.goHome(false);
       }
     });
-
-    // Mobile drawer toggle listeners
-    const sidebarPanel = byId('sidebar-panel');
-    const sidebarBackdrop = byId('sidebar-backdrop');
-    const mobileSidebarToggle = byId('mobile-sidebar-toggle');
-    const asideClose = byId('aside-close');
-    const mobileFab = byId('mobile-fab');
-
-    function openMobileSidebar() {
-      if (sidebarPanel) sidebarPanel.classList.add('drawer-open');
-      if (sidebarBackdrop) sidebarBackdrop.classList.add('visible');
-    }
-    function closeMobileSidebar() {
-      if (sidebarPanel) sidebarPanel.classList.remove('drawer-open');
-      if (sidebarBackdrop) sidebarBackdrop.classList.remove('visible');
-    }
-
-    if (mobileSidebarToggle) mobileSidebarToggle.addEventListener('click', openMobileSidebar);
-    if (mobileFab) mobileFab.addEventListener('click', openMobileSidebar);
-    if (asideClose) asideClose.addEventListener('click', closeMobileSidebar);
-    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeMobileSidebar);
   </script>
-  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 </body>
 </html>
