@@ -40,13 +40,46 @@
       min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center; border-bottom: 1px solid var(--line); background: #090d12;
     }
+    .top-left-group {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px 0 12px;
+      border-right: 1px solid var(--line);
+    }
+    .topbar-menu-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 9px;
+      border: 1px solid var(--line-strong);
+      border-radius: 5px;
+      background: var(--raised);
+      color: #c9d1d9;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .topbar-menu-btn:hover {
+      background: var(--raised-hover);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .topbar-menu-btn.active {
+      background: var(--accent-bg);
+      border-color: #315a78;
+      color: #dff2ff;
+    }
     .brand {
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 0 16px;
-      border-right: 1px solid var(--line);
+      padding: 0;
+      border-right: none;
     }
     .brand-copy { min-width: 0; }
     .eyebrow { color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
@@ -96,8 +129,75 @@
     .nav-link-btn:hover { border-color: var(--accent); background: var(--raised-hover); color: #fff; }
     
     /* Workspace */
-    .workspace { min-height: 0; height: 100%; display: grid; grid-template-columns: 310px minmax(0, 1fr); overflow: hidden; position: relative; }
-    aside { min-height: 0; height: 100%; width: 310px; min-width: 310px; max-width: 310px; display: flex; flex-direction: column; background: var(--panel); border-right: 1px solid var(--line); overflow: hidden; }
+    .workspace {
+      min-height: 0;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      overflow: hidden;
+      position: relative;
+      transition: grid-template-columns 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .workspace.sidebar-collapsed {
+      grid-template-columns: 0px minmax(0, 1fr);
+    }
+    aside {
+      min-height: 0;
+      height: 100%;
+      width: 310px;
+      min-width: 310px;
+      max-width: 310px;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-right: 1px solid var(--line);
+      overflow: hidden;
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease;
+      position: relative;
+      z-index: 20;
+    }
+    .workspace.sidebar-collapsed aside {
+      transform: translateX(-100%);
+      pointer-events: none;
+      opacity: 0;
+      border-right-color: transparent;
+    }
+    .aside-header {
+      flex-shrink: 0;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line);
+      background: #090c10;
+    }
+    .aside-header-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .aside-collapse-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      background: var(--raised);
+      color: #c9d1d9;
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .aside-collapse-btn:hover {
+      background: var(--raised-hover);
+      border-color: var(--accent);
+      color: #fff;
+    }
     .scroll { flex: 1 1 0%; min-height: 0; overflow-y: auto; scrollbar-color: #30363d transparent; }
     .section { padding: 13px 14px; border-bottom: 1px solid var(--line); }
     .section-title { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 9px; }
@@ -381,33 +481,111 @@
     .loading-copy { color: var(--muted); font-size: 12px; letter-spacing: .04em; }
     .openseadragon-container .navigator { border: 1px solid #30363d !important; background: #0d1117 !important; opacity: .88; }
 
-    /* Responsive styling for smaller displays */
-    @media (max-width: 840px) {
+    /* Floating Menu Button & Scrim (For mobile and collapsed desktop) */
+    .floating-menu-btn {
+      position: absolute;
+      top: 48px;
+      left: 14px;
+      z-index: 15;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border: 1px solid rgba(88, 166, 255, 0.45);
+      border-radius: 20px;
+      background: rgba(13, 17, 23, 0.94);
+      backdrop-filter: blur(8px);
+      color: #f0f6fc;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
+      transition: all 0.18s ease;
+    }
+    .floating-menu-btn:hover {
+      background: #1f2a38;
+      border-color: var(--accent);
+    }
+    .workspace.sidebar-collapsed .floating-menu-btn {
+      display: inline-flex;
+    }
+    .sidebar-scrim {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(2px);
+      z-index: 25;
+      cursor: pointer;
+    }
+
+    /* Responsive styling for smaller displays & mobile phones */
+    @media (max-width: 768px) {
       .topbar {
-        padding: 0 10px;
-        gap: 8px;
+        padding: 0 8px;
+        gap: 6px;
       }
-      .brand { padding: 0 10px 0 0; }
+      .top-left-group {
+        padding: 0 8px 0 4px;
+        gap: 6px;
+      }
       .brand-copy .eyebrow { display: none; }
       .brand-title { font-size: 12px; }
-      .workspace { grid-template-columns: 270px minmax(0, 1fr); }
-      aside { width: 270px; min-width: 270px; max-width: 270px; }
+      .workspace {
+        grid-template-columns: 1fr !important;
+      }
+      aside {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: min(320px, 86vw);
+        min-width: unset;
+        max-width: unset;
+        z-index: 30;
+        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.85);
+        transform: translateX(-100%);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .workspace.sidebar-mobile-open aside {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .workspace.sidebar-mobile-open .sidebar-scrim {
+        display: block;
+      }
+      .floating-menu-btn {
+        display: inline-flex;
+      }
+      .workspace.sidebar-mobile-open .floating-menu-btn {
+        display: none;
+      }
       .mode-strip { overflow-x: auto; scrollbar-width: none; }
       .mode-strip::-webkit-scrollbar { display: none; }
-      .mode-button { padding: 4px 8px; font-size: 11px; }
-      .rep-strip .rep-btn { padding: 3px 7px; font-size: 10.5px; }
+      .mode-button { padding: 4px 7px; font-size: 10.5px; }
+      .rep-strip .rep-btn { padding: 3px 6px; font-size: 10px; }
       .zoom-readout { display: none; }
-      .viewport-status { left: 10px; bottom: 10px; font-size: 10px; padding: 4px 8px; max-width: 60%; }
+      .viewport-status { left: 10px; bottom: 10px; font-size: 9.5px; padding: 3px 7px; max-width: 55%; }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="topbar">
-      <div class="brand">
-        <div class="brand-copy">
-          <div class="eyebrow">Arizona Camera Lab · Heterogeneous Rig</div>
-          <div class="brand-title">Multiscale Viewer</div>
+      <div class="top-left-group">
+        <button type="button" class="topbar-menu-btn" id="topbar-menu-btn" title="Toggle Sidebar Menu ([)">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+          </svg>
+          <span class="menu-label">Menu</span>
+        </button>
+        <div class="brand">
+          <div class="brand-copy">
+            <div class="eyebrow">Arizona Camera Lab · Heterogeneous Rig</div>
+            <div class="brand-title">Multiscale Viewer</div>
+          </div>
         </div>
       </div>
       <nav class="mode-strip" aria-label="Focal navigation">
@@ -431,8 +609,15 @@
       </div>
     </header>
 
-    <div class="workspace">
+    <div class="workspace" id="workspace">
       <aside id="sidebar-panel">
+        <div class="aside-header">
+          <span class="aside-header-title">Layers &amp; Settings</span>
+          <button type="button" class="aside-collapse-btn" id="aside-collapse-btn" title="Put away menu ([)">
+            <span>Put away</span>
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+          </button>
+        </div>
         <div class="scroll">
           <!-- Active Layer Info -->
           <section class="section">
@@ -554,6 +739,13 @@
         <div class="mode-toast" id="mode-toast">Representation: Color Fused</div>
         <div class="viewport-status"><span class="status-dot"></span><span id="status">Loading multiscale array…</span></div>
         <div class="loading" id="loading"><div class="loading-copy" id="loading-copy">Loading 0 / 25 layers</div></div>
+        <button type="button" class="floating-menu-btn" id="floating-menu-btn" title="Open Layer Controls &amp; Settings">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+          </svg>
+          <span>Layers</span>
+        </button>
+        <div class="sidebar-scrim" id="sidebar-scrim" title="Close menu"></div>
       </main>
     </div>
   </div>
@@ -1372,7 +1564,47 @@
         viewer.viewport.resize();
       }
       drawFootprints();
+      if (window.innerWidth > 768) {
+        workspaceEl.classList.remove('sidebar-mobile-open');
+      }
     });
+
+    // Sidebar menu toggle (Desktop collapse & Mobile slide-out)
+    const workspaceEl = byId('workspace');
+    const topbarMenuBtn = byId('topbar-menu-btn');
+    const asideCollapseBtn = byId('aside-collapse-btn');
+    const floatingMenuBtn = byId('floating-menu-btn');
+    const sidebarScrim = byId('sidebar-scrim');
+
+    function toggleMenu(forceOpen) {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        const shouldOpen = forceOpen !== undefined ? forceOpen : !workspaceEl.classList.contains('sidebar-mobile-open');
+        workspaceEl.classList.toggle('sidebar-mobile-open', shouldOpen);
+        if (topbarMenuBtn) topbarMenuBtn.classList.toggle('active', shouldOpen);
+      } else {
+        const shouldOpen = forceOpen !== undefined ? forceOpen : workspaceEl.classList.contains('sidebar-collapsed');
+        workspaceEl.classList.toggle('sidebar-collapsed', !shouldOpen);
+        if (topbarMenuBtn) topbarMenuBtn.classList.toggle('active', shouldOpen);
+      }
+      setTimeout(() => {
+        if (viewer && viewer.viewport) {
+          viewer.viewport.resize();
+        }
+        drawFootprints();
+      }, 250);
+    }
+
+    if (topbarMenuBtn) topbarMenuBtn.addEventListener('click', () => toggleMenu());
+    if (asideCollapseBtn) asideCollapseBtn.addEventListener('click', () => toggleMenu(false));
+    if (floatingMenuBtn) floatingMenuBtn.addEventListener('click', () => toggleMenu(true));
+    if (sidebarScrim) sidebarScrim.addEventListener('click', () => toggleMenu(false));
+
+    // Check URL parameters for initial menu state
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('menu') === '0' || urlParams.get('fullscreen') === '1' || window.location.hash === '#hide-menu') {
+      toggleMenu(false);
+    }
 
     // Keyboard shortcuts
     document.addEventListener('keydown', event => {
@@ -1390,6 +1622,12 @@
       }
       if (event.key === 'e' || event.key === 'E') {
         cycleFieldEdge();
+      }
+      if (event.key === '[' || event.key === ']') {
+        toggleMenu();
+      }
+      if (event.key === 'Escape') {
+        toggleMenu(false);
       }
       if (event.code === 'Space') {
         event.preventDefault();

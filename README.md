@@ -54,6 +54,7 @@ Interactive, multi-scale deep zoom viewer for the department camera array, regis
 
 | Key | Action |
 | :--- | :--- |
+| <kbd>[</kbd> / <kbd>]</kbd> | Put away / Toggle Sidebar Menu |
 | <kbd>E</kbd> | Cycle through Telephoto Field Edges (`Left` → `Right` → `Top` → `Bottom` → `Center`) |
 | <kbd>M</kbd> / <kbd>F</kbd> | Toggle representation (**Color Fused** ⇄ **Native Mono**) |
 | <kbd>0</kbd> | Auto Zoom Mode (focal tier switches dynamically on scroll) |
