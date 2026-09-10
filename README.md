@@ -1,15 +1,15 @@
-# Gigapixel Multi-Scale Camera Array Viewer
+# Multiscale Viewer
 
-Interactive, multi-scale deep zoom viewer for a 10-camera heterogeneous array, registered into a unified gigapixel coordinate frame. 
+Interactive, multi-scale deep zoom viewer for the department camera array, registered into a unified coordinate frame.
 
 **Live Interactive Web Viewer (GitHub Pages):**
-[https://gord123098.github.io/gigapixel-multiscale-viewer/](https://gord123098.github.io/gigapixel-multiscale-viewer/)
+[https://gord123098.github.io/department-photo/](https://gord123098.github.io/department-photo/)
 
 ---
 
 ## Key Features
 
-1. **Gigapixel Multi-Scale Pyramid (1.00× to 4.80×)**
+1. **Multi-Scale Pyramid (1.00× to 4.80×)**
    - **Wide Panorama Base (1.00×):** 8FF9 color reference camera covering the entire scene.
    - **12 mm Stitched Tier (1.55×):** Blended panoramic array from monochrome cameras `6450` and `643D`.
    - **Close Detail Stitched Tier (4.80×):** Unified 6-camera telephoto array (`447`, `6453`, `6445`, `645C`, `458`, `644F`) providing high-resolution detail.

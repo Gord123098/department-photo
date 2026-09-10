@@ -1,5 +1,5 @@
 {
-  "title": "Gigapixel Multi-Scale Camera Array",
+  "title": "Multiscale Viewer",
   "visualReferenceTime": "8FF9 reference frame 300",
   "temporalAlignmentMethod": "all-frame visual motion search + affine clock fit",
   "temporalAlignmentManifest": "../temporal_overlap_results/verified-temporal-alignment.json",
