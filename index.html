@@ -539,28 +539,38 @@
         gap: 6px;
       }
       .brand-copy .eyebrow { display: none; }
-      .brand-title { font-size: 12px; }
-      .workspace {
-        grid-template-columns: 1fr !important;
+      .workspace,
+      .workspace.sidebar-collapsed,
+      .workspace.sidebar-mobile-open {
+        display: block !important;
+        position: relative !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      main {
+        position: absolute !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
       }
       aside {
-        position: absolute;
+        position: absolute !important;
         top: 0;
         left: 0;
         bottom: 0;
-        width: min(320px, 86vw);
-        min-width: unset;
-        max-width: unset;
-        z-index: 30;
+        width: min(320px, 86vw) !important;
+        min-width: unset !important;
+        max-width: unset !important;
+        z-index: 30 !important;
         box-shadow: 6px 0 28px rgba(0, 0, 0, 0.85);
         transform: translateX(-100%);
         opacity: 0;
         pointer-events: none;
       }
       .workspace.sidebar-mobile-open aside {
-        transform: translateX(0);
-        opacity: 1;
-        pointer-events: auto;
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
       }
       .workspace.sidebar-mobile-open .sidebar-scrim {
         display: block;
@@ -570,6 +580,9 @@
       }
       .workspace.sidebar-mobile-open .floating-menu-btn {
         display: none;
+      }
+      .openseadragon-container .navigator {
+        display: none !important;
       }
       .mode-strip { overflow-x: auto; scrollbar-width: none; }
       .mode-strip::-webkit-scrollbar { display: none; }
@@ -780,7 +793,7 @@
       minZoomImageRatio: 0.72,
       visibilityRatio: 0.05,
       constrainDuringPan: false,
-      preserveViewport: true,
+      preserveViewport: false,
       gestureSettingsTouch: {
         pinchRotate: false,
         scrollToZoom: false,
@@ -835,6 +848,14 @@
       }
       const layer = state.layers.get(id);
       if (layer) layer.opacity = opacity;
+    }
+
+    function resetToHome(immediately = false) {
+      if (!viewer || !viewer.viewport) return;
+      viewer.viewport.resize();
+      // Entire panoramic base canvas bounds (4168x3180) -> width 1.0, height 3180/4168 ≈ 0.76295585
+      const baseRect = new OpenSeadragon.Rect(0, 0, 1.0, 3180 / 4168);
+      viewer.viewport.fitBounds(baseRect, immediately);
     }
 
     function relativeZoom() {
@@ -1434,10 +1455,14 @@
               state.items.set(layer.id, event.item);
               state.loaded += 1;
               byId('loading-copy').textContent = `Loading ${state.loaded} / ${metadata.layers.length} layers`;
+              if (layer.id === 'composite-color-base' || state.loaded === 1) {
+                applyVisibility();
+                resetToHome(true);
+              }
               if (state.loaded === metadata.layers.length) {
                 viewer.viewport.resize();
                 applyVisibility();
-                viewer.viewport.goHome(true);
+                resetToHome(true);
                 byId('loading').classList.add('hidden');
               }
             },
@@ -1558,7 +1583,7 @@
 
     byId('reset-view').addEventListener('click', () => {
       selectMode('auto');
-      viewer.viewport.goHome(false);
+      resetToHome(false);
     });
 
     // OpenSeadragon viewport event handlers
@@ -1576,6 +1601,14 @@
       if (window.innerWidth > 840) {
         workspaceEl.classList.remove('sidebar-mobile-open');
       }
+    });
+
+    window.addEventListener('load', () => {
+      setTimeout(() => resetToHome(true), 120);
+      setTimeout(() => resetToHome(true), 500);
+    });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => resetToHome(true), 250);
     });
 
     // Sidebar menu toggle (Desktop collapse & Mobile slide-out)
@@ -1644,7 +1677,7 @@
       if (event.code === 'Space') {
         event.preventDefault();
         selectMode('auto');
-        viewer.viewport.goHome(false);
+        resetToHome(false);
       }
     });
   </script>
