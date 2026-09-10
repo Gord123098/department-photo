@@ -37,8 +37,16 @@ Interactive, multi-scale deep zoom viewer for the department camera array, regis
 
 5. **Full Mobile & Desktop Support**
    - Responsive touch gestures: pinch-to-zoom, pan, double-tap zoom.
-   - Slide-out controls drawer with touch backdrop on mobile phones and tablets.
    - Clean, lightweight, self-contained static web application hosted on GitHub Pages.
+   - Focused panoramic viewport with intuitive left-hand sidebar controls.
+
+---
+
+## Credits & Acknowledgments
+
+- **Heterogeneous Camera Array**: Based on the processing pipeline and camera registration architecture from the [Arizona Camera Lab](https://github.com/arizonaCameraLab).
+- **Upstream Repository**: [arizonaCameraLab/Heterogeneous-Camera-Array](https://github.com/arizonaCameraLab/Heterogeneous-Camera-Array)
+- **Author & Original Viewer**: Special credit to **Adel** ([@adel111700](https://github.com/adel111700)) for authoring the heterogeneous camera array pipeline and original viewer.
 
 ---
 

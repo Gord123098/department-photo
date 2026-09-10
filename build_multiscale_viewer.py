@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Build a registered, layered Deep Zoom viewer from one synchronized instant.
 
+Based on the Heterogeneous Camera Array processing pipeline and camera registration
+architecture from Arizona Camera Lab (https://github.com/arizonaCameraLab/Heterogeneous-Camera-Array),
+originally authored by Adel (@adel111700).
+
 The color cameras form the panorama base. Monochrome cameras are geometrically
 registered into the same coordinate system and receive chroma from the color base
 while retaining their own luminance detail. Every raw and pan-sharpened layer is

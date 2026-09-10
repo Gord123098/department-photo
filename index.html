@@ -33,7 +33,7 @@
     body { margin: 0; overflow: hidden; background: var(--bg); color: var(--text); }
     button, input { font: inherit; }
     button { color: inherit; }
-    .app { width: 100vw; height: 100vh; display: grid; grid-template-rows: 52px minmax(0, 1fr); overflow: hidden; }
+    .app { width: 100%; height: 100%; display: grid; grid-template-rows: 52px minmax(0, 1fr); overflow: hidden; }
     
     /* Topbar */
     .topbar {
@@ -87,6 +87,13 @@
     .zoom-readout { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 11px; font-weight: 600; min-width: 48px; text-align: right; }
     .reset-button { border: 1px solid var(--line-strong); border-radius: 5px; background: var(--raised); padding: 5px 10px; font-size: 11px; cursor: pointer; transition: all .15s ease; }
     .reset-button:hover { border-color: #637181; background: var(--raised-hover); color: var(--text); }
+    .nav-link-btn {
+      display: inline-flex; align-items: center; text-decoration: none;
+      border: 1px solid var(--line-strong); border-radius: 5px; background: var(--raised);
+      padding: 5px 9px; font-size: 11px; font-weight: 500; color: var(--muted);
+      cursor: pointer; transition: all .15s ease; white-space: nowrap;
+    }
+    .nav-link-btn:hover { border-color: var(--accent); background: var(--raised-hover); color: #fff; }
     
     /* Workspace */
     .workspace { min-height: 0; height: 100%; display: grid; grid-template-columns: 310px minmax(0, 1fr); overflow: hidden; position: relative; }
@@ -227,8 +234,15 @@
     .locate-btn:hover { color: #fff; border-color: var(--accent); background: var(--raised-hover); }
     
     .footnote {
-      padding: 11px 14px; color: #6e7681; font-size: 9.5px; line-height: 1.45;
-      border-top: 1px solid var(--line); margin-top: auto;
+      flex-shrink: 0;
+      padding: 9px 14px; color: #8b949e; font-size: 10px; line-height: 1.45;
+      border-top: 1px solid var(--line); background: #0a0d12;
+    }
+    .footnote a { color: var(--accent); text-decoration: none; }
+    .footnote a:hover { text-decoration: underline; }
+    .footnote-shortcuts { margin-bottom: 5px; color: #6e7681; font-size: 9px; }
+    .footnote-credits {
+      padding-top: 5px; border-top: 1px solid #1a222d; color: #8b949e; font-size: 9.5px; line-height: 1.4;
     }
     
     /* Layer Stack Compositor */
@@ -411,6 +425,9 @@
         </div>
         <div class="zoom-readout" id="zoom-readout">1.00×</div>
         <button class="reset-button" type="button" id="reset-view" title="Reset view to whole panorama (Space)">Reset view</button>
+        <a class="nav-link-btn" href="https://github.com/arizonaCameraLab/Heterogeneous-Camera-Array" target="_blank" rel="noopener noreferrer" title="View Arizona Camera Lab Heterogeneous Camera Array on GitHub">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 5px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Array GitHub
+        </a>
       </div>
     </header>
 
@@ -522,8 +539,12 @@
         </div>
 
         <div class="footnote">
-          <b>Shortcuts:</b> Scroll to zoom · <kbd>M</kbd> toggle Color/Mono · <kbd>0</kbd>–<kbd>4</kbd> focal modes · <kbd>Space</kbd> reset view.<br>
-          Highest-resolution color warp (642F 1.66× / 8FF9 1.00×) + DIS optical flow. Frame 300.
+          <div class="footnote-shortcuts">
+            <b>Shortcuts:</b> Scroll zoom · <kbd>M</kbd> Color/Mono · <kbd>0</kbd>–<kbd>4</kbd> modes · <kbd>Space</kbd> reset view
+          </div>
+          <div class="footnote-credits">
+            Based on the <a href="https://github.com/arizonaCameraLab/Heterogeneous-Camera-Array" target="_blank" rel="noopener noreferrer">Heterogeneous Camera Array</a> repository &amp; viewer by Adel (<a href="https://github.com/adel111700" target="_blank" rel="noopener noreferrer">@adel111700</a>).
+          </div>
         </div>
       </aside>
 
