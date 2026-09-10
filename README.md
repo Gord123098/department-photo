@@ -4,7 +4,6 @@ Interactive, multi-scale deep zoom viewer for the department camera array, regis
 
 **Live Interactive Web Viewer (GitHub Pages):**
 - [https://gord123098.github.io/department-photo/](https://gord123098.github.io/department-photo/)
-- [https://arizonacameralab.github.io/department-photo/](https://arizonacameralab.github.io/department-photo/)
 
 **Repositories (Auto-Synchronized):**
 - [https://github.com/Gord123098/department-photo](https://github.com/Gord123098/department-photo)
