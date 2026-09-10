@@ -1,0 +1,56 @@
+name: Sync Repositories
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_TOKEN }}
+
+      - name: Synchronize to Partner Repository
+        env:
+          SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
+          CURRENT_REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          if [ -z "$SYNC_TOKEN" ]; then
+            echo "SYNC_TOKEN secret not set. Skipping sync."
+            exit 0
+          fi
+
+          if [ "$CURRENT_REPO" = "Gord123098/department-photo" ]; then
+            TARGET_REPO="arizonaCameraLab/department-photo"
+          elif [ "$CURRENT_REPO" = "arizonaCameraLab/department-photo" ]; then
+            TARGET_REPO="Gord123098/department-photo"
+          else
+            echo "Unknown current repository: $CURRENT_REPO. Skipping sync."
+            exit 0
+          fi
+
+          echo "Current repo: $CURRENT_REPO"
+          echo "Target repo:  $TARGET_REPO"
+          echo "Commit SHA:   $COMMIT_SHA"
+
+          TARGET_URL="https://x-access-token:${SYNC_TOKEN}@github.com/${TARGET_REPO}.git"
+
+          # Check target repo current HEAD to prevent infinite loops
+          TARGET_SHA=$(git ls-remote "$TARGET_URL" refs/heads/main | awk '{print $1}')
+          echo "Target repo HEAD SHA: $TARGET_SHA"
+
+          if [ "$TARGET_SHA" = "$COMMIT_SHA" ]; then
+            echo "Target repository is already up to date ($COMMIT_SHA). No action needed."
+            exit 0
+          fi
+
+          echo "Pushing latest commits to $TARGET_REPO..."
+          git remote add target "$TARGET_URL"
+          git push target main
+          echo "Sync to $TARGET_REPO completed successfully!"
