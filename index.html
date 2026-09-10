@@ -40,14 +40,17 @@
       min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center; border-bottom: 1px solid var(--line); background: #090d12;
     }
-    .brand { height: 100%; display: flex; align-items: center; gap: 11px; padding: 0 16px; border-right: 1px solid var(--line); }
-    .mark { width: 22px; height: 22px; position: relative; border: 1px solid #485b6e; border-radius: 3px; }
-    .mark::before, .mark::after { content: ""; position: absolute; border: 1px solid var(--accent); border-radius: 2px; }
-    .mark::before { inset: 4px; }
-    .mark::after { inset: 8px; background: var(--accent); }
+    .brand {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 16px;
+      border-right: 1px solid var(--line);
+    }
     .brand-copy { min-width: 0; }
     .eyebrow { color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-    .brand-title { margin-top: 1px; font-size: 13px; font-weight: 650; white-space: nowrap; }
+    .brand-title { margin-top: 1px; font-size: 13.5px; font-weight: 700; white-space: nowrap; }
     
     .mode-strip { display: flex; align-items: center; justify-content: center; gap: 5px; padding: 0 12px; min-width: 0; }
     .mode-button {
