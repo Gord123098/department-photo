@@ -33,7 +33,7 @@
     body { margin: 0; overflow: hidden; background: var(--bg); color: var(--text); }
     button, input { font: inherit; }
     button { color: inherit; }
-    .app { height: 100vh; display: grid; grid-template-rows: 52px minmax(0, 1fr); }
+    .app { width: 100vw; height: 100vh; display: grid; grid-template-rows: 52px minmax(0, 1fr); overflow: hidden; }
     
     /* Topbar */
     .topbar {
@@ -86,9 +86,9 @@
     .reset-button:hover { border-color: #637181; background: var(--raised-hover); color: var(--text); }
     
     /* Workspace */
-    .workspace { min-height: 0; display: grid; grid-template-columns: 310px minmax(0, 1fr); }
-    aside { min-height: 0; display: flex; flex-direction: column; background: var(--panel); border-right: 1px solid var(--line); }
-    .scroll { min-height: 0; overflow-y: auto; scrollbar-color: #30363d transparent; }
+    .workspace { min-height: 0; height: 100%; display: grid; grid-template-columns: 320px minmax(0, 1fr); overflow: hidden; }
+    aside { min-height: 0; height: 100%; display: flex; flex-direction: column; background: var(--panel); border-right: 1px solid var(--line); overflow: hidden; }
+    .scroll { flex: 1; min-height: 0; overflow-y: auto; scrollbar-color: #30363d transparent; }
     .section { padding: 13px 14px; border-bottom: 1px solid var(--line); }
     .section-title { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 9px; }
     .section-title h2 { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #b7c0c8; }
@@ -325,8 +325,8 @@
     .stack-remove-btn:hover { color: #f85149; background: rgba(248, 81, 73, 0.15); }
 
     /* Viewport */
-    main { min-width: 0; min-height: 0; position: relative; background: #050608; }
-    #viewer { position: absolute; inset: 0; background: #050608; }
+    main { min-width: 0; min-height: 0; height: 100%; position: relative; background: #050608; overflow: hidden; }
+    #viewer { position: absolute; inset: 0; width: 100%; height: 100%; background: #050608; }
     #footprints { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
     #footprints polygon { fill: rgba(88,166,255,.03); stroke: rgba(88,166,255,.8); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
     #footprints polygon.highlighted { stroke: #58a6ff; stroke-width: 2.2; fill: rgba(88,166,255,.12); }
@@ -1423,6 +1423,7 @@
               state.loaded += 1;
               byId('loading-copy').textContent = `Loading ${state.loaded} / ${metadata.layers.length} layers`;
               if (state.loaded === metadata.layers.length) {
+                viewer.viewport.resize();
                 applyVisibility();
                 viewer.viewport.goHome(true);
                 byId('loading').classList.add('hidden');
@@ -1554,6 +1555,13 @@
     viewer.addHandler('pan', applyVisibility);
     viewer.addHandler('animation-finish', applyVisibility);
     viewer.addHandler('resize', drawFootprints);
+
+    window.addEventListener('resize', () => {
+      if (viewer && viewer.viewport) {
+        viewer.viewport.resize();
+      }
+      drawFootprints();
+    });
 
     // Keyboard shortcuts
     document.addEventListener('keydown', event => {
