@@ -890,7 +890,7 @@ def main() -> None:
     layers.extend(pan_layers)
     layers.extend(raw_layers)
     metadata = {
-        "title": "Gigapixel Multi-Scale Camera Array",
+        "title": "Multiscale Viewer",
         "visualReferenceTime": f"8FF9 reference frame {REFERENCE_FRAME:.0f}",
         "temporalAlignmentMethod": "all-frame visual motion search + affine clock fit",
         "temporalAlignmentManifest": "../temporal_overlap_results/verified-temporal-alignment.json",

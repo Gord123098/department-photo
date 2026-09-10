@@ -353,7 +353,7 @@
     
     .loading { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; background: #080a0d; transition: opacity .25s; }
     .loading.hidden { opacity: 0; pointer-events: none; }
-      html, body {
+    html, body {
       overscroll-behavior: none;
       -webkit-touch-callout: none;
     }
@@ -361,6 +361,21 @@
       touch-action: none;
     }
 
+    .loading-copy { color: var(--muted); font-size: 12px; letter-spacing: .04em; }
+    .openseadragon-container .navigator { border: 1px solid #30363d !important; background: #0d1117 !important; opacity: .88; }
+
+    /* Mobile Drawer Components */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(2px);
+      z-index: 90;
+    }
+    .sidebar-backdrop.visible {
+      display: block;
+    }
     .sidebar-toggle-btn {
       display: none;
       align-items: center;
@@ -429,6 +444,56 @@
       background: #388bfd;
     }
 
+    /* Desktop Layout (Default >= 881px) */
+    @media (min-width: 881px) {
+      .workspace {
+        min-height: 0;
+        height: 100%;
+        display: grid !important;
+        grid-template-columns: 310px minmax(0, 1fr) !important;
+        position: relative;
+      }
+      aside {
+        min-height: 0;
+        height: 100%;
+        width: 310px !important;
+        position: static !important;
+        transform: none !important;
+        display: flex !important;
+        flex-direction: column;
+        background: var(--panel);
+        border-right: 1px solid var(--line);
+        box-shadow: none !important;
+      }
+      main {
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+        position: relative !important;
+        background: #050608;
+      }
+      #viewer {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: #050608;
+      }
+      .sidebar-backdrop {
+        display: none !important;
+      }
+      .sidebar-toggle-btn {
+        display: none !important;
+      }
+      .mobile-fab-btn {
+        display: none !important;
+      }
+      .aside-mobile-header {
+        display: none !important;
+      }
+    }
+
+    /* Mobile Layout (< 880px) */
     @media (max-width: 880px) {
       .sidebar-toggle-btn {
         display: inline-flex;
@@ -477,6 +542,19 @@
         display: block;
         position: relative;
         height: 100%;
+        width: 100%;
+      }
+      main {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      #viewer {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
       }
       aside {
         position: fixed;
@@ -484,6 +562,7 @@
         left: 0;
         bottom: 0;
         width: min(340px, 86vw);
+        height: 100%;
         z-index: 100;
         background: #0d1117;
         box-shadow: 4px 0 24px rgba(0, 0, 0, 0.75);
@@ -495,21 +574,6 @@
       }
       .aside-mobile-header {
         display: flex;
-      }
-      .sidebar-backdrop {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(2px);
-        z-index: 90;
-      }
-      .sidebar-backdrop.visible {
-        display: block;
-      }
-      main {
-        position: absolute;
-        inset: 0;
       }
       .viewport-status {
         left: 10px;
@@ -556,7 +620,6 @@
     </header>
 
     <div class="workspace">
-      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
       <aside id="sidebar-panel">
         <div class="aside-mobile-header">
           <span>Layers &amp; Controls</span>
@@ -1537,5 +1600,6 @@
     if (asideClose) asideClose.addEventListener('click', closeMobileSidebar);
     if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeMobileSidebar);
   </script>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 </body>
 </html>
