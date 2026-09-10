@@ -618,7 +618,7 @@
       </div>
     </header>
 
-    <div class="workspace" id="workspace">
+    <div class="workspace sidebar-collapsed" id="workspace">
       <aside id="sidebar-panel">
         <div class="aside-header">
           <span class="aside-header-title">Layers &amp; Settings</span>
@@ -1612,10 +1612,10 @@
     if (floatingMenuBtn) floatingMenuBtn.addEventListener('click', () => toggleMenu(true));
     if (sidebarScrim) sidebarScrim.addEventListener('click', () => toggleMenu(false));
 
-    // Check URL parameters for initial menu state
+    // Check URL parameters for initial menu state (menu is closed by default)
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('menu') === '0' || urlParams.get('fullscreen') === '1' || window.location.hash === '#hide-menu') {
-      toggleMenu(false);
+    if (urlParams.get('menu') === '1' || urlParams.get('layers') === '1' || window.location.hash === '#menu') {
+      toggleMenu(true);
     }
 
     // Keyboard shortcuts
