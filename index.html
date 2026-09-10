@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Multiscale Viewer</title>
   <style>
     :root {
@@ -39,6 +42,7 @@
     .topbar {
       min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center; border-bottom: 1px solid var(--line); background: #090d12;
+      position: relative; z-index: 40;
     }
     .top-left-group {
       height: 100%;
@@ -139,7 +143,7 @@
       transition: grid-template-columns 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .workspace.sidebar-collapsed {
-      grid-template-columns: 0px minmax(0, 1fr);
+      grid-template-columns: 0px minmax(0, 1fr) !important;
     }
     aside {
       min-height: 0;
@@ -157,10 +161,15 @@
       z-index: 20;
     }
     .workspace.sidebar-collapsed aside {
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      padding: 0 !important;
+      border-right: none !important;
       transform: translateX(-100%);
       pointer-events: none;
       opacity: 0;
-      border-right-color: transparent;
+      overflow: hidden;
     }
     .aside-header {
       flex-shrink: 0;
@@ -520,7 +529,7 @@
     }
 
     /* Responsive styling for smaller displays & mobile phones */
-    @media (max-width: 768px) {
+    @media (max-width: 840px) {
       .topbar {
         padding: 0 8px;
         gap: 6px;
@@ -1564,7 +1573,7 @@
         viewer.viewport.resize();
       }
       drawFootprints();
-      if (window.innerWidth > 768) {
+      if (window.innerWidth > 840) {
         workspaceEl.classList.remove('sidebar-mobile-open');
       }
     });
@@ -1577,15 +1586,18 @@
     const sidebarScrim = byId('sidebar-scrim');
 
     function toggleMenu(forceOpen) {
-      const isMobile = window.innerWidth <= 768;
+      const isMobile = window.innerWidth <= 840;
       if (isMobile) {
-        const shouldOpen = forceOpen !== undefined ? forceOpen : !workspaceEl.classList.contains('sidebar-mobile-open');
+        workspaceEl.classList.remove('sidebar-collapsed');
+        const shouldOpen = forceOpen !== undefined ? !!forceOpen : !workspaceEl.classList.contains('sidebar-mobile-open');
         workspaceEl.classList.toggle('sidebar-mobile-open', shouldOpen);
         if (topbarMenuBtn) topbarMenuBtn.classList.toggle('active', shouldOpen);
       } else {
-        const shouldOpen = forceOpen !== undefined ? forceOpen : workspaceEl.classList.contains('sidebar-collapsed');
-        workspaceEl.classList.toggle('sidebar-collapsed', !shouldOpen);
-        if (topbarMenuBtn) topbarMenuBtn.classList.toggle('active', shouldOpen);
+        workspaceEl.classList.remove('sidebar-mobile-open');
+        const isCollapsed = workspaceEl.classList.contains('sidebar-collapsed');
+        const shouldCollapse = forceOpen !== undefined ? !forceOpen : !isCollapsed;
+        workspaceEl.classList.toggle('sidebar-collapsed', shouldCollapse);
+        if (topbarMenuBtn) topbarMenuBtn.classList.toggle('active', !shouldCollapse);
       }
       setTimeout(() => {
         if (viewer && viewer.viewport) {
