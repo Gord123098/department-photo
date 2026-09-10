@@ -1,0 +1,1598 @@
+{
+  "title": "Gigapixel Multi-Scale Camera Array",
+  "visualReferenceTime": "8FF9 reference frame 300",
+  "temporalAlignmentMethod": "all-frame visual motion search + affine clock fit",
+  "temporalAlignmentManifest": "../temporal_overlap_results/verified-temporal-alignment.json",
+  "canvasPixelWidth": 4168,
+  "canvasPixelHeight": 3180,
+  "registrationMethod": "ALIKED + LightGlue + USAC_MAGSAC",
+  "excludedCameras": [
+    "6434"
+  ],
+  "inactiveAtReference": [
+    "645C_2"
+  ],
+  "colorCameras": [
+    "8FF9",
+    "642F"
+  ],
+  "monoCameras": [
+    "6450_12mm_left",
+    "643D_12mm_right",
+    "447",
+    "6453",
+    "6445",
+    "645C",
+    "458",
+    "644F"
+  ],
+  "detailTiers": [
+    {
+      "id": "tier-12mm",
+      "monoId": "tier-12mm-mono",
+      "label": "12 mm stitched",
+      "shortLabel": "12 mm",
+      "minZoom": 2.2,
+      "cameras": [
+        "6450_12mm_left",
+        "643D_12mm_right"
+      ]
+    },
+    {
+      "id": "tier-telephoto",
+      "monoId": "tier-telephoto-mono",
+      "label": "Close detail (A + B stitched)",
+      "shortLabel": "Close A + B",
+      "minZoom": 3.6,
+      "cameras": [
+        "447",
+        "6453",
+        "6445",
+        "645C",
+        "458",
+        "644F"
+      ]
+    },
+    {
+      "id": "tier-mono-array",
+      "monoId": "tier-mono-array-mono",
+      "label": "All-monochrome array stitched",
+      "shortLabel": "All Mono Array",
+      "minZoom": 2.0,
+      "cameras": [
+        "6450_12mm_left",
+        "643D_12mm_right",
+        "447",
+        "6453",
+        "6445",
+        "645C",
+        "458",
+        "644F"
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "id": "composite-color-base",
+      "label": "Wide color panorama",
+      "shortLabel": "Wide",
+      "kind": "base",
+      "channel": "color",
+      "camera": "8FF9 color reference",
+      "confidence": "high",
+      "x": 0,
+      "y": 0,
+      "width": 1,
+      "defaultOpacity": 1,
+      "tileSource": "tiles/composite-color-base.dzi",
+      "pixelWidth": 4168,
+      "pixelHeight": 3180
+    },
+    {
+      "id": "tier-12mm",
+      "label": "12 mm stitched (Color Fused)",
+      "shortLabel": "12 mm Fused",
+      "kind": "detail-tier",
+      "channel": "color",
+      "fused": true,
+      "camera": "6450_12mm_left + 643D_12mm_right",
+      "cameras": [
+        "6450_12mm_left",
+        "643D_12mm_right"
+      ],
+      "confidence": "high",
+      "tierIndex": 1,
+      "minZoom": 2.2,
+      "resolutionScale": 1.55,
+      "defaultOpacity": 1,
+      "x": 0.14659309021113243,
+      "y": 0.23512476007677544,
+      "width": 0.6331573896353166,
+      "footprints": [
+        [
+          [
+            0.1548333,
+            0.2352602
+          ],
+          [
+            0.5612259,
+            0.2561887
+          ],
+          [
+            0.5599077,
+            0.5396714
+          ],
+          [
+            0.1467664,
+            0.5546144
+          ]
+        ],
+        [
+          [
+            0.3761055,
+            0.2554484
+          ],
+          [
+            0.770014,
+            0.2457862
+          ],
+          [
+            0.7795621,
+            0.5524369
+          ],
+          [
+            0.3765973,
+            0.5415302
+          ]
+        ]
+      ],
+      "tileSource": "tiles/tier-12mm.dzi",
+      "pixelWidth": 4091,
+      "pixelHeight": 2065
+    },
+    {
+      "id": "tier-12mm-mono",
+      "label": "12 mm stitched (Native Mono)",
+      "shortLabel": "12 mm Mono",
+      "kind": "detail-tier-mono",
+      "channel": "mono",
+      "fused": false,
+      "camera": "6450_12mm_left + 643D_12mm_right",
+      "cameras": [
+        "6450_12mm_left",
+        "643D_12mm_right"
+      ],
+      "confidence": "high",
+      "tierIndex": 1,
+      "minZoom": 2.2,
+      "resolutionScale": 1.55,
+      "defaultOpacity": 1,
+      "x": 0.14659309021113243,
+      "y": 0.23512476007677544,
+      "width": 0.6331573896353166,
+      "footprints": [
+        [
+          [
+            0.1548333,
+            0.2352602
+          ],
+          [
+            0.5612259,
+            0.2561887
+          ],
+          [
+            0.5599077,
+            0.5396714
+          ],
+          [
+            0.1467664,
+            0.5546144
+          ]
+        ],
+        [
+          [
+            0.3761055,
+            0.2554484
+          ],
+          [
+            0.770014,
+            0.2457862
+          ],
+          [
+            0.7795621,
+            0.5524369
+          ],
+          [
+            0.3765973,
+            0.5415302
+          ]
+        ]
+      ],
+      "tileSource": "tiles/tier-12mm-mono.dzi",
+      "pixelWidth": 4091,
+      "pixelHeight": 2065
+    },
+    {
+      "id": "tier-telephoto",
+      "label": "Close detail (A + B stitched) (Color Fused)",
+      "shortLabel": "Close A + B Fused",
+      "kind": "detail-tier",
+      "channel": "color",
+      "fused": true,
+      "camera": "447 + 6453 + 6445 + 645C + 458 + 644F",
+      "cameras": [
+        "447",
+        "6453",
+        "6445",
+        "645C",
+        "458",
+        "644F"
+      ],
+      "confidence": "high",
+      "tierIndex": 2,
+      "minZoom": 3.6,
+      "resolutionScale": 4.8,
+      "defaultOpacity": 1,
+      "x": 0.3682821497120921,
+      "y": 0.3956333973128599,
+      "width": 0.32053742802303264,
+      "footprints": [
+        [
+          [
+            0.3727613,
+            0.442311
+          ],
+          [
+            0.4715833,
+            0.4454222
+          ],
+          [
+            0.4687232,
+            0.5215709
+          ],
+          [
+            0.3682872,
+            0.5193802
+          ]
+        ],
+        [
+          [
+            0.4012439,
+            0.3957303
+          ],
+          [
+            0.4990916,
+            0.3971776
+          ],
+          [
+            0.4977044,
+            0.470884
+          ],
+          [
+            0.3988855,
+            0.4699361
+          ]
+        ],
+        [
+          [
+            0.4711077,
+            0.4184045
+          ],
+          [
+            0.5699992,
+            0.4194047
+          ],
+          [
+            0.5713069,
+            0.4951792
+          ],
+          [
+            0.4706002,
+            0.4925557
+          ]
+        ],
+        [
+          [
+            0.5019266,
+            0.4554052
+          ],
+          [
+            0.603059,
+            0.4577494
+          ],
+          [
+            0.6048139,
+            0.5376114
+          ],
+          [
+            0.5009764,
+            0.5328441
+          ]
+        ],
+        [
+          [
+            0.562317,
+            0.4315504
+          ],
+          [
+            0.6665583,
+            0.4319063
+          ],
+          [
+            0.6720705,
+            0.511403
+          ],
+          [
+            0.5647459,
+            0.5075908
+          ]
+        ],
+        [
+          [
+            0.5766795,
+            0.4508647
+          ],
+          [
+            0.6828996,
+            0.4518301
+          ],
+          [
+            0.688809,
+            0.5348094
+          ],
+          [
+            0.5790769,
+            0.5297418
+          ]
+        ]
+      ],
+      "tileSource": "tiles/tier-telephoto.dzi",
+      "pixelWidth": 6413,
+      "pixelHeight": 2842
+    },
+    {
+      "id": "tier-telephoto-mono",
+      "label": "Close detail (A + B stitched) (Native Mono)",
+      "shortLabel": "Close A + B Mono",
+      "kind": "detail-tier-mono",
+      "channel": "mono",
+      "fused": false,
+      "camera": "447 + 6453 + 6445 + 645C + 458 + 644F",
+      "cameras": [
+        "447",
+        "6453",
+        "6445",
+        "645C",
+        "458",
+        "644F"
+      ],
+      "confidence": "high",
+      "tierIndex": 2,
+      "minZoom": 3.6,
+      "resolutionScale": 4.8,
+      "defaultOpacity": 1,
+      "x": 0.3682821497120921,
+      "y": 0.3956333973128599,
+      "width": 0.32053742802303264,
+      "footprints": [
+        [
+          [
+            0.3727613,
+            0.442311
+          ],
+          [
+            0.4715833,
+            0.4454222
+          ],
+          [
+            0.4687232,
+            0.5215709
+          ],
+          [
+            0.3682872,
+            0.5193802
+          ]
+        ],
+        [
+          [
+            0.4012439,
+            0.3957303
+          ],
+          [
+            0.4990916,
+            0.3971776
+          ],
+          [
+            0.4977044,
+            0.470884
+          ],
+          [
+            0.3988855,
+            0.4699361
+          ]
+        ],
+        [
+          [
+            0.4711077,
+            0.4184045
+          ],
+          [
+            0.5699992,
+            0.4194047
+          ],
+          [
+            0.5713069,
+            0.4951792
+          ],
+          [
+            0.4706002,
+            0.4925557
+          ]
+        ],
+        [
+          [
+            0.5019266,
+            0.4554052
+          ],
+          [
+            0.603059,
+            0.4577494
+          ],
+          [
+            0.6048139,
+            0.5376114
+          ],
+          [
+            0.5009764,
+            0.5328441
+          ]
+        ],
+        [
+          [
+            0.562317,
+            0.4315504
+          ],
+          [
+            0.6665583,
+            0.4319063
+          ],
+          [
+            0.6720705,
+            0.511403
+          ],
+          [
+            0.5647459,
+            0.5075908
+          ]
+        ],
+        [
+          [
+            0.5766795,
+            0.4508647
+          ],
+          [
+            0.6828996,
+            0.4518301
+          ],
+          [
+            0.688809,
+            0.5348094
+          ],
+          [
+            0.5790769,
+            0.5297418
+          ]
+        ]
+      ],
+      "tileSource": "tiles/tier-telephoto-mono.dzi",
+      "pixelWidth": 6413,
+      "pixelHeight": 2842
+    },
+    {
+      "id": "tier-mono-array",
+      "label": "All-monochrome array stitched (Color Fused)",
+      "shortLabel": "All Mono Array Fused",
+      "kind": "detail-tier",
+      "channel": "color",
+      "fused": true,
+      "camera": "6450_12mm_left + 643D_12mm_right + 447 + 6453 + 6445 + 645C + 458 + 644F",
+      "cameras": [
+        "6450_12mm_left",
+        "643D_12mm_right",
+        "447",
+        "6453",
+        "6445",
+        "645C",
+        "458",
+        "644F"
+      ],
+      "confidence": "high",
+      "tierIndex": 3,
+      "minZoom": 2.0,
+      "resolutionScale": 3.155,
+      "defaultOpacity": 1,
+      "x": 0.14659309021113243,
+      "y": 0.23512476007677544,
+      "width": 0.6331573896353166,
+      "footprints": [
+        [
+          [
+            0.1548333,
+            0.2352602
+          ],
+          [
+            0.5612259,
+            0.2561887
+          ],
+          [
+            0.5599077,
+            0.5396714
+          ],
+          [
+            0.1467664,
+            0.5546144
+          ]
+        ],
+        [
+          [
+            0.3761055,
+            0.2554484
+          ],
+          [
+            0.770014,
+            0.2457862
+          ],
+          [
+            0.7795621,
+            0.5524369
+          ],
+          [
+            0.3765973,
+            0.5415302
+          ]
+        ],
+        [
+          [
+            0.3727613,
+            0.442311
+          ],
+          [
+            0.4715833,
+            0.4454222
+          ],
+          [
+            0.4687232,
+            0.5215709
+          ],
+          [
+            0.3682872,
+            0.5193802
+          ]
+        ],
+        [
+          [
+            0.4012439,
+            0.3957303
+          ],
+          [
+            0.4990916,
+            0.3971776
+          ],
+          [
+            0.4977044,
+            0.470884
+          ],
+          [
+            0.3988855,
+            0.4699361
+          ]
+        ],
+        [
+          [
+            0.4711077,
+            0.4184045
+          ],
+          [
+            0.5699992,
+            0.4194047
+          ],
+          [
+            0.5713069,
+            0.4951792
+          ],
+          [
+            0.4706002,
+            0.4925557
+          ]
+        ],
+        [
+          [
+            0.5019266,
+            0.4554052
+          ],
+          [
+            0.603059,
+            0.4577494
+          ],
+          [
+            0.6048139,
+            0.5376114
+          ],
+          [
+            0.5009764,
+            0.5328441
+          ]
+        ],
+        [
+          [
+            0.562317,
+            0.4315504
+          ],
+          [
+            0.6665583,
+            0.4319063
+          ],
+          [
+            0.6720705,
+            0.511403
+          ],
+          [
+            0.5647459,
+            0.5075908
+          ]
+        ],
+        [
+          [
+            0.5766795,
+            0.4508647
+          ],
+          [
+            0.6828996,
+            0.4518301
+          ],
+          [
+            0.688809,
+            0.5348094
+          ],
+          [
+            0.5790769,
+            0.5297418
+          ]
+        ]
+      ],
+      "tileSource": "tiles/tier-mono-array.dzi",
+      "pixelWidth": 8328,
+      "pixelHeight": 4204
+    },
+    {
+      "id": "tier-mono-array-mono",
+      "label": "All-monochrome array stitched (Native Mono)",
+      "shortLabel": "All Mono Array Mono",
+      "kind": "detail-tier-mono",
+      "channel": "mono",
+      "fused": false,
+      "camera": "6450_12mm_left + 643D_12mm_right + 447 + 6453 + 6445 + 645C + 458 + 644F",
+      "cameras": [
+        "6450_12mm_left",
+        "643D_12mm_right",
+        "447",
+        "6453",
+        "6445",
+        "645C",
+        "458",
+        "644F"
+      ],
+      "confidence": "high",
+      "tierIndex": 3,
+      "minZoom": 2.0,
+      "resolutionScale": 3.155,
+      "defaultOpacity": 1,
+      "x": 0.14659309021113243,
+      "y": 0.23512476007677544,
+      "width": 0.6331573896353166,
+      "footprints": [
+        [
+          [
+            0.1548333,
+            0.2352602
+          ],
+          [
+            0.5612259,
+            0.2561887
+          ],
+          [
+            0.5599077,
+            0.5396714
+          ],
+          [
+            0.1467664,
+            0.5546144
+          ]
+        ],
+        [
+          [
+            0.3761055,
+            0.2554484
+          ],
+          [
+            0.770014,
+            0.2457862
+          ],
+          [
+            0.7795621,
+            0.5524369
+          ],
+          [
+            0.3765973,
+            0.5415302
+          ]
+        ],
+        [
+          [
+            0.3727613,
+            0.442311
+          ],
+          [
+            0.4715833,
+            0.4454222
+          ],
+          [
+            0.4687232,
+            0.5215709
+          ],
+          [
+            0.3682872,
+            0.5193802
+          ]
+        ],
+        [
+          [
+            0.4012439,
+            0.3957303
+          ],
+          [
+            0.4990916,
+            0.3971776
+          ],
+          [
+            0.4977044,
+            0.470884
+          ],
+          [
+            0.3988855,
+            0.4699361
+          ]
+        ],
+        [
+          [
+            0.4711077,
+            0.4184045
+          ],
+          [
+            0.5699992,
+            0.4194047
+          ],
+          [
+            0.5713069,
+            0.4951792
+          ],
+          [
+            0.4706002,
+            0.4925557
+          ]
+        ],
+        [
+          [
+            0.5019266,
+            0.4554052
+          ],
+          [
+            0.603059,
+            0.4577494
+          ],
+          [
+            0.6048139,
+            0.5376114
+          ],
+          [
+            0.5009764,
+            0.5328441
+          ]
+        ],
+        [
+          [
+            0.562317,
+            0.4315504
+          ],
+          [
+            0.6665583,
+            0.4319063
+          ],
+          [
+            0.6720705,
+            0.511403
+          ],
+          [
+            0.5647459,
+            0.5075908
+          ]
+        ],
+        [
+          [
+            0.5766795,
+            0.4508647
+          ],
+          [
+            0.6828996,
+            0.4518301
+          ],
+          [
+            0.688809,
+            0.5348094
+          ],
+          [
+            0.5790769,
+            0.5297418
+          ]
+        ]
+      ],
+      "tileSource": "tiles/tier-mono-array-mono.dzi",
+      "pixelWidth": 8328,
+      "pixelHeight": 4204
+    },
+    {
+      "id": "pan-447",
+      "label": "447 (Color Fused)",
+      "shortLabel": "447 Fused",
+      "kind": "camera-fused",
+      "channel": "color",
+      "fused": true,
+      "fusionMethod": "bilateral-smoothed YCrCb pan-sharpening from 642F high-resolution (1.66x)",
+      "colorSource": "642F high-resolution (1.66x)",
+      "defaultOpacity": 1,
+      "camera": "447",
+      "sourceFile": "447/447_959.bmp",
+      "confidence": "high",
+      "registrationParent": "6453",
+      "registrationInliers": 294,
+      "registrationError": 1.185,
+      "registrationCoverage": 0.2199,
+      "x": 0.3682821497120921,
+      "y": 0.44217850287907867,
+      "width": 0.10340690978886756,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.3727613,
+          0.442311
+        ],
+        [
+          0.4715833,
+          0.4454222
+        ],
+        [
+          0.4687232,
+          0.5215709
+        ],
+        [
+          0.3682872,
+          0.5193802
+        ]
+      ],
+      "tileSource": "tiles/pan-447.dzi",
+      "pixelWidth": 2155,
+      "pixelHeight": 1655
+    },
+    {
+      "id": "pan-458",
+      "label": "458 (Color Fused)",
+      "shortLabel": "458 Fused",
+      "kind": "camera-fused",
+      "channel": "color",
+      "fused": true,
+      "fusionMethod": "bilateral-smoothed YCrCb pan-sharpening from 642F high-resolution (1.66x)",
+      "colorSource": "642F high-resolution (1.66x)",
+      "defaultOpacity": 1,
+      "camera": "458",
+      "sourceFile": "458/458__1003.bmp",
+      "confidence": "high",
+      "registrationParent": "645C",
+      "registrationInliers": 258,
+      "registrationError": 1.467,
+      "registrationCoverage": 0.224,
+      "x": 0.5621401151631478,
+      "y": 0.43138195777351246,
+      "width": 0.11012476007677544,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.562317,
+          0.4315504
+        ],
+        [
+          0.6665583,
+          0.4319063
+        ],
+        [
+          0.6720705,
+          0.511403
+        ],
+        [
+          0.5647459,
+          0.5075908
+        ]
+      ],
+      "tileSource": "tiles/pan-458.dzi",
+      "pixelWidth": 2295,
+      "pixelHeight": 1670
+    },
+    {
+      "id": "pan-643d_12mm_right",
+      "label": "643D_12mm_right (Color Fused)",
+      "shortLabel": "643D_12mm_right Fused",
+      "kind": "camera-fused",
+      "channel": "color",
+      "fused": true,
+      "fusionMethod": "bilateral-smoothed YCrCb pan-sharpening from 642F high-resolution (1.66x)",
+      "colorSource": "642F high-resolution (1.66x)",
+      "defaultOpacity": 1,
+      "camera": "643D_12mm_right",
+      "sourceFile": "643D_12mm_right/VimbaImage_503.bmp",
+      "confidence": "high",
+      "registrationParent": "8FF9",
+      "registrationInliers": 780,
+      "registrationError": 1.429,
+      "registrationCoverage": 0.8311,
+      "x": 0.3759596928982726,
+      "y": 0.2456813819577735,
+      "width": 0.4037907869481766,
+      "resolutionScale": 2.44,
+      "footprint": [
+        [
+          0.3761055,
+          0.2554484
+        ],
+        [
+          0.770014,
+          0.2457862
+        ],
+        [
+          0.7795621,
+          0.5524369
+        ],
+        [
+          0.3765973,
+          0.5415302
+        ]
+      ],
+      "tileSource": "tiles/pan-643d_12mm_right.dzi",
+      "pixelWidth": 4108,
+      "pixelHeight": 3122
+    },
+    {
+      "id": "pan-6445",
+      "label": "6445 (Color Fused)",
+      "shortLabel": "6445 Fused",
+      "kind": "camera-fused",
+      "channel": "color",
+      "fused": true,
+      "fusionMethod": "bilateral-smoothed YCrCb pan-sharpening from 642F high-resolution (1.66x)",
+      "colorSource": "642F high-resolution (1.66x)",
+      "defaultOpacity": 1,
+      "camera": "6445",
+      "sourceFile": "6445/VimbaImage_968.bmp",
+      "confidence": "high",
+      "registrationParent": "6453",
+      "registrationInliers": 252,
+      "registrationError": 1.625,
+      "registrationCoverage": 0.166,
+      "x": 0.470489443378119,
+      "y": 0.41818618042226485,
+      "width": 0.10100767754318618,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.4711077,
+          0.4184045
+        ],
+        [
+          0.5699992,
+          0.4194047
+        ],
+        [
+          0.5713069,
+          0.4951792
+        ],
+        [
+          0.4706002,
+          0.4925557
+        ]
+      ],
+      "tileSource": "tiles/pan-6445.dzi",
+      "pixelWidth": 2105,
+      "pixelHeight": 1605
+    },
+    {
+      "id": "pan-644f",
+      "label": "644F (Color Fused)",
+      "shortLabel": "644F Fused",
+      "kind": "camera-fused",
+      "channel": "color",
+      "fused": true,
+      "fusionMethod": "bilateral-smoothed YCrCb pan-sharpening from 642F high-resolution (1.66x)",
+      "colorSource": "642F high-resolution (1.66x)",
+      "defaultOpacity": 1,
+      "camera": "644F",
+      "sourceFile": "644F/VimbaImage_243.bmp",
+      "confidence": "high",
+      "registrationParent": "458",
+      "registrationInliers": 619,
+      "registrationError": 1.402,
+      "registrationCoverage": 0.4598,
+      "x": 0.5765355086372361,
+      "y": 0.45081573896353166,
+      "width": 0.11228406909788867,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.5766795,
+          0.4508647
+        ],
+        [
+          0.6828996,
+          0.4518301
+        ],
+        [
+          0.688809,
+          0.5348094
+        ],
+        [
+          0.5790769,
+          0.5297418
+        ]
+      ],
+      "tileSource": "tiles/pan-644f.dzi",
+      "pixelWidth": 2340,
+      "pixelHeight": 1755
+    },
+    {
+      "id": "pan-6450_12mm_left",
+      "label": "6450_12mm_left (Color Fused)",
+      "shortLabel": "6450_12mm_left Fused",
+      "kind": "camera-fused",
+      "channel": "color",
+      "fused": true,
+      "fusionMethod": "bilateral-smoothed YCrCb pan-sharpening from 642F (1.66x, 48%) + 8FF9 hybrid",
+      "colorSource": "642F (1.66x, 48%) + 8FF9 hybrid",
+      "defaultOpacity": 1,
+      "camera": "6450_12mm_left",
+      "sourceFile": "6450_12mm_left/VmbImage_New_484.bmp",
+      "confidence": "high",
+      "registrationParent": "8FF9",
+      "registrationInliers": 950,
+      "registrationError": 1.056,
+      "registrationCoverage": 0.9297,
+      "x": 0.14659309021113243,
+      "y": 0.23512476007677544,
+      "width": 0.41482725527831094,
+      "resolutionScale": 2.386,
+      "footprint": [
+        [
+          0.1548333,
+          0.2352602
+        ],
+        [
+          0.5612259,
+          0.2561887
+        ],
+        [
+          0.5599077,
+          0.5396714
+        ],
+        [
+          0.1467664,
+          0.5546144
+        ]
+      ],
+      "tileSource": "tiles/pan-6450_12mm_left.dzi",
+      "pixelWidth": 4126,
+      "pixelHeight": 3179
+    },
+    {
+      "id": "pan-6453",
+      "label": "6453 (Color Fused)",
+      "shortLabel": "6453 Fused",
+      "kind": "camera-fused",
+      "channel": "color",
+      "fused": true,
+      "fusionMethod": "bilateral-smoothed YCrCb pan-sharpening from 642F high-resolution (1.66x)",
+      "colorSource": "642F high-resolution (1.66x)",
+      "defaultOpacity": 1,
+      "camera": "6453",
+      "sourceFile": "6453/6453_New_372.bmp",
+      "confidence": "high",
+      "registrationParent": "6450_12mm_left",
+      "registrationInliers": 210,
+      "registrationError": 1.377,
+      "registrationCoverage": 0.8895,
+      "x": 0.3987523992322457,
+      "y": 0.3956333973128599,
+      "width": 0.1005278310940499,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.4012439,
+          0.3957303
+        ],
+        [
+          0.4990916,
+          0.3971776
+        ],
+        [
+          0.4977044,
+          0.470884
+        ],
+        [
+          0.3988855,
+          0.4699361
+        ]
+      ],
+      "tileSource": "tiles/pan-6453.dzi",
+      "pixelWidth": 2095,
+      "pixelHeight": 1570
+    },
+    {
+      "id": "pan-645c",
+      "label": "645C (Color Fused)",
+      "shortLabel": "645C Fused",
+      "kind": "camera-fused",
+      "channel": "color",
+      "fused": true,
+      "fusionMethod": "bilateral-smoothed YCrCb pan-sharpening from 642F high-resolution (1.66x)",
+      "colorSource": "642F high-resolution (1.66x)",
+      "defaultOpacity": 1,
+      "camera": "645C",
+      "sourceFile": "645C/VmbImage_992.bmp",
+      "confidence": "high",
+      "registrationParent": "6445",
+      "registrationInliers": 385,
+      "registrationError": 1.417,
+      "registrationCoverage": 0.3132,
+      "x": 0.5009596928982726,
+      "y": 0.4553742802303263,
+      "width": 0.10388675623800384,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.5019266,
+          0.4554052
+        ],
+        [
+          0.603059,
+          0.4577494
+        ],
+        [
+          0.6048139,
+          0.5376114
+        ],
+        [
+          0.5009764,
+          0.5328441
+        ]
+      ],
+      "tileSource": "tiles/pan-645c.dzi",
+      "pixelWidth": 2165,
+      "pixelHeight": 1715
+    },
+    {
+      "id": "raw-447",
+      "label": "447 (Native Mono)",
+      "shortLabel": "447 Mono",
+      "kind": "camera-mono",
+      "channel": "mono",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "447",
+      "sourceFile": "447/447_959.bmp",
+      "confidence": "high",
+      "registrationParent": "6453",
+      "registrationInliers": 294,
+      "registrationError": 1.185,
+      "registrationCoverage": 0.2199,
+      "x": 0.3682821497120921,
+      "y": 0.44217850287907867,
+      "width": 0.10340690978886756,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.3727613,
+          0.442311
+        ],
+        [
+          0.4715833,
+          0.4454222
+        ],
+        [
+          0.4687232,
+          0.5215709
+        ],
+        [
+          0.3682872,
+          0.5193802
+        ]
+      ],
+      "tileSource": "tiles/raw-447.dzi",
+      "pixelWidth": 2155,
+      "pixelHeight": 1655
+    },
+    {
+      "id": "raw-458",
+      "label": "458 (Native Mono)",
+      "shortLabel": "458 Mono",
+      "kind": "camera-mono",
+      "channel": "mono",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "458",
+      "sourceFile": "458/458__1003.bmp",
+      "confidence": "high",
+      "registrationParent": "645C",
+      "registrationInliers": 258,
+      "registrationError": 1.467,
+      "registrationCoverage": 0.224,
+      "x": 0.5621401151631478,
+      "y": 0.43138195777351246,
+      "width": 0.11012476007677544,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.562317,
+          0.4315504
+        ],
+        [
+          0.6665583,
+          0.4319063
+        ],
+        [
+          0.6720705,
+          0.511403
+        ],
+        [
+          0.5647459,
+          0.5075908
+        ]
+      ],
+      "tileSource": "tiles/raw-458.dzi",
+      "pixelWidth": 2295,
+      "pixelHeight": 1670
+    },
+    {
+      "id": "raw-642f",
+      "label": "642F (Color)",
+      "shortLabel": "642F Color",
+      "kind": "camera-color",
+      "channel": "color",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "642F",
+      "sourceFile": "642F/VmbImage_309.bmp",
+      "confidence": "high",
+      "registrationParent": "8FF9",
+      "registrationInliers": 667,
+      "registrationError": 1.601,
+      "registrationCoverage": 0.2471,
+      "x": 0.3591650671785029,
+      "y": 0.16242802303262957,
+      "width": 0.5890115163147792,
+      "resolutionScale": 1.664,
+      "footprint": [
+        [
+          0.3593337,
+          0.1626431
+        ],
+        [
+          0.9468963,
+          0.1648477
+        ],
+        [
+          0.9481512,
+          0.5983256
+        ],
+        [
+          0.3648133,
+          0.596803
+        ]
+      ],
+      "tileSource": "tiles/raw-642f.dzi",
+      "pixelWidth": 4086,
+      "pixelHeight": 3024
+    },
+    {
+      "id": "raw-643d_12mm_right",
+      "label": "643D_12mm_right (Native Mono)",
+      "shortLabel": "643D_12mm_right Mono",
+      "kind": "camera-mono",
+      "channel": "mono",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "643D_12mm_right",
+      "sourceFile": "643D_12mm_right/VimbaImage_503.bmp",
+      "confidence": "high",
+      "registrationParent": "8FF9",
+      "registrationInliers": 780,
+      "registrationError": 1.429,
+      "registrationCoverage": 0.8311,
+      "x": 0.3759596928982726,
+      "y": 0.2456813819577735,
+      "width": 0.4037907869481766,
+      "resolutionScale": 2.44,
+      "footprint": [
+        [
+          0.3761055,
+          0.2554484
+        ],
+        [
+          0.770014,
+          0.2457862
+        ],
+        [
+          0.7795621,
+          0.5524369
+        ],
+        [
+          0.3765973,
+          0.5415302
+        ]
+      ],
+      "tileSource": "tiles/raw-643d_12mm_right.dzi",
+      "pixelWidth": 4108,
+      "pixelHeight": 3122
+    },
+    {
+      "id": "raw-6445",
+      "label": "6445 (Native Mono)",
+      "shortLabel": "6445 Mono",
+      "kind": "camera-mono",
+      "channel": "mono",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "6445",
+      "sourceFile": "6445/VimbaImage_968.bmp",
+      "confidence": "high",
+      "registrationParent": "6453",
+      "registrationInliers": 252,
+      "registrationError": 1.625,
+      "registrationCoverage": 0.166,
+      "x": 0.470489443378119,
+      "y": 0.41818618042226485,
+      "width": 0.10100767754318618,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.4711077,
+          0.4184045
+        ],
+        [
+          0.5699992,
+          0.4194047
+        ],
+        [
+          0.5713069,
+          0.4951792
+        ],
+        [
+          0.4706002,
+          0.4925557
+        ]
+      ],
+      "tileSource": "tiles/raw-6445.dzi",
+      "pixelWidth": 2105,
+      "pixelHeight": 1605
+    },
+    {
+      "id": "raw-644f",
+      "label": "644F (Native Mono)",
+      "shortLabel": "644F Mono",
+      "kind": "camera-mono",
+      "channel": "mono",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "644F",
+      "sourceFile": "644F/VimbaImage_243.bmp",
+      "confidence": "high",
+      "registrationParent": "458",
+      "registrationInliers": 619,
+      "registrationError": 1.402,
+      "registrationCoverage": 0.4598,
+      "x": 0.5765355086372361,
+      "y": 0.45081573896353166,
+      "width": 0.11228406909788867,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.5766795,
+          0.4508647
+        ],
+        [
+          0.6828996,
+          0.4518301
+        ],
+        [
+          0.688809,
+          0.5348094
+        ],
+        [
+          0.5790769,
+          0.5297418
+        ]
+      ],
+      "tileSource": "tiles/raw-644f.dzi",
+      "pixelWidth": 2340,
+      "pixelHeight": 1755
+    },
+    {
+      "id": "raw-6450_12mm_left",
+      "label": "6450_12mm_left (Native Mono)",
+      "shortLabel": "6450_12mm_left Mono",
+      "kind": "camera-mono",
+      "channel": "mono",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "6450_12mm_left",
+      "sourceFile": "6450_12mm_left/VmbImage_New_484.bmp",
+      "confidence": "high",
+      "registrationParent": "8FF9",
+      "registrationInliers": 950,
+      "registrationError": 1.056,
+      "registrationCoverage": 0.9297,
+      "x": 0.14659309021113243,
+      "y": 0.23512476007677544,
+      "width": 0.41482725527831094,
+      "resolutionScale": 2.386,
+      "footprint": [
+        [
+          0.1548333,
+          0.2352602
+        ],
+        [
+          0.5612259,
+          0.2561887
+        ],
+        [
+          0.5599077,
+          0.5396714
+        ],
+        [
+          0.1467664,
+          0.5546144
+        ]
+      ],
+      "tileSource": "tiles/raw-6450_12mm_left.dzi",
+      "pixelWidth": 4126,
+      "pixelHeight": 3179
+    },
+    {
+      "id": "raw-6453",
+      "label": "6453 (Native Mono)",
+      "shortLabel": "6453 Mono",
+      "kind": "camera-mono",
+      "channel": "mono",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "6453",
+      "sourceFile": "6453/6453_New_372.bmp",
+      "confidence": "high",
+      "registrationParent": "6450_12mm_left",
+      "registrationInliers": 210,
+      "registrationError": 1.377,
+      "registrationCoverage": 0.8895,
+      "x": 0.3987523992322457,
+      "y": 0.3956333973128599,
+      "width": 0.1005278310940499,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.4012439,
+          0.3957303
+        ],
+        [
+          0.4990916,
+          0.3971776
+        ],
+        [
+          0.4977044,
+          0.470884
+        ],
+        [
+          0.3988855,
+          0.4699361
+        ]
+      ],
+      "tileSource": "tiles/raw-6453.dzi",
+      "pixelWidth": 2095,
+      "pixelHeight": 1570
+    },
+    {
+      "id": "raw-645c",
+      "label": "645C (Native Mono)",
+      "shortLabel": "645C Mono",
+      "kind": "camera-mono",
+      "channel": "mono",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "645C",
+      "sourceFile": "645C/VmbImage_992.bmp",
+      "confidence": "high",
+      "registrationParent": "6445",
+      "registrationInliers": 385,
+      "registrationError": 1.417,
+      "registrationCoverage": 0.3132,
+      "x": 0.5009596928982726,
+      "y": 0.4553742802303263,
+      "width": 0.10388675623800384,
+      "resolutionScale": 5.0,
+      "footprint": [
+        [
+          0.5019266,
+          0.4554052
+        ],
+        [
+          0.603059,
+          0.4577494
+        ],
+        [
+          0.6048139,
+          0.5376114
+        ],
+        [
+          0.5009764,
+          0.5328441
+        ]
+      ],
+      "tileSource": "tiles/raw-645c.dzi",
+      "pixelWidth": 2165,
+      "pixelHeight": 1715
+    },
+    {
+      "id": "raw-8ff9",
+      "label": "8FF9 (Color)",
+      "shortLabel": "8FF9 Color",
+      "kind": "camera-color",
+      "channel": "color",
+      "fused": false,
+      "defaultOpacity": 1,
+      "camera": "8FF9",
+      "sourceFile": "8FF9/VimbaImage_301.bmp",
+      "confidence": "high",
+      "registrationParent": null,
+      "registrationInliers": null,
+      "registrationError": 0,
+      "registrationCoverage": 1,
+      "x": 0.01727447216890595,
+      "y": 0.01727447216890595,
+      "width": 0.9654510556621881,
+      "resolutionScale": 1.0,
+      "footprint": [
+        [
+          0.0172745,
+          0.0172745
+        ],
+        [
+          0.9827255,
+          0.0172745
+        ],
+        [
+          0.9827255,
+          0.7456814
+        ],
+        [
+          0.0172745,
+          0.7456814
+        ]
+      ],
+      "tileSource": "tiles/raw-8ff9.dzi",
+      "pixelWidth": 4024,
+      "pixelHeight": 3036
+    }
+  ]
+}

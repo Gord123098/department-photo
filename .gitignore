@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+.DS_Store
+*.swp
+compare_*.jpg
+crop_*.jpg
+test_*.jpg
+test-*.jpg
+test_*.png
+test-*.png
+qa-*.png
+qa-*.jpg
+!qa-tier-12mm.jpg
+!qa-tier-telephoto.jpg

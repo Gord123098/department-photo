@@ -1,0 +1,1541 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gigapixel Multi-Scale Camera Array</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bg: #07090c;
+      --panel: #0d1117;
+      --raised: #161b22;
+      --raised-hover: #1f2630;
+      --line: #21262d;
+      --line-strong: #30363d;
+      --text: #f0f6fc;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-bg: #122538;
+      --color-tag: #58a6ff;
+      --color-tag-bg: rgba(56, 139, 253, 0.15);
+      --fused-tag: #d2a8ff;
+      --fused-tag-bg: rgba(163, 113, 247, 0.18);
+      --fused-border: rgba(163, 113, 247, 0.35);
+      --mono-tag: #c9d1d9;
+      --mono-tag-bg: rgba(201, 209, 217, 0.12);
+      --good: #3fb950;
+      --warn: #d29922;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
+    body { margin: 0; overflow: hidden; background: var(--bg); color: var(--text); }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .app { height: 100vh; display: grid; grid-template-rows: 52px minmax(0, 1fr); }
+    
+    /* Topbar */
+    .topbar {
+      min-width: 0; display: grid; grid-template-columns: 280px minmax(0, 1fr) auto;
+      align-items: center; border-bottom: 1px solid var(--line); background: #090d12;
+    }
+    .brand { height: 100%; display: flex; align-items: center; gap: 11px; padding: 0 16px; border-right: 1px solid var(--line); }
+    .mark { width: 22px; height: 22px; position: relative; border: 1px solid #485b6e; border-radius: 3px; }
+    .mark::before, .mark::after { content: ""; position: absolute; border: 1px solid var(--accent); border-radius: 2px; }
+    .mark::before { inset: 4px; }
+    .mark::after { inset: 8px; background: var(--accent); }
+    .brand-copy { min-width: 0; }
+    .eyebrow { color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .brand-title { margin-top: 1px; font-size: 13px; font-weight: 650; white-space: nowrap; }
+    
+    .mode-strip { display: flex; align-items: center; justify-content: center; gap: 5px; padding: 0 12px; min-width: 0; }
+    .mode-button {
+      padding: 6px 12px; border: 1px solid transparent; border-radius: 5px;
+      background: transparent; color: var(--muted); font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: all .15s ease; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .mode-button:hover { color: var(--text); background: var(--raised); }
+    .mode-button.active { color: #dff2ff; border-color: #315a78; background: var(--accent-bg); font-weight: 600; }
+    
+    .top-actions { display: flex; align-items: center; gap: 10px; padding-right: 16px; }
+    
+    /* Representation Switch Strip */
+    .rep-strip {
+      display: inline-flex; align-items: center; background: #11161d;
+      border: 1px solid var(--line-strong); border-radius: 5px; padding: 2px; gap: 2px;
+    }
+    .rep-btn {
+      padding: 4px 10px; border: 1px solid transparent; border-radius: 4px;
+      background: transparent; color: var(--muted); font-size: 11.5px; font-weight: 500; cursor: pointer;
+      transition: all .15s ease; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .rep-btn:hover { color: var(--text); background: var(--raised); }
+    .rep-btn.active {
+      color: #fff; background: var(--raised-hover); border-color: #30363d; font-weight: 600;
+    }
+    .rep-btn.fused-btn.active {
+      color: #f3e8ff; background: #261b36; border-color: #7b42bc;
+    }
+    .rep-btn.mono-btn.active {
+      color: #f0f6fc; background: #1c2430; border-color: #485b6e;
+    }
+
+    .zoom-readout { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 11px; font-weight: 600; min-width: 48px; text-align: right; }
+    .reset-button { border: 1px solid var(--line-strong); border-radius: 5px; background: var(--raised); padding: 5px 10px; font-size: 11px; cursor: pointer; transition: all .15s ease; }
+    .reset-button:hover { border-color: #637181; background: var(--raised-hover); color: var(--text); }
+    
+    /* Workspace */
+    .workspace { min-height: 0; display: grid; grid-template-columns: 310px minmax(0, 1fr); }
+    aside { min-height: 0; display: flex; flex-direction: column; background: var(--panel); border-right: 1px solid var(--line); }
+    .scroll { min-height: 0; overflow-y: auto; scrollbar-color: #30363d transparent; }
+    .section { padding: 13px 14px; border-bottom: 1px solid var(--line); }
+    .section-title { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 9px; }
+    .section-title h2 { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #b7c0c8; }
+    .section-title span { color: var(--muted); font-size: 10px; }
+    
+    /* Active Card */
+    .active-card {
+      padding: 12px; border: 1px solid #23384c; border-radius: 6px;
+      background: linear-gradient(135deg, #101c27, #0c131a);
+    }
+    .active-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .active-kicker { color: var(--accent); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    
+    .sensor-pill {
+      display: inline-flex; align-items: center; gap: 3px; padding: 2px 6px; border-radius: 4px;
+      font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    }
+    .sensor-pill.color { background: var(--color-tag-bg); color: var(--color-tag); border: 1px solid rgba(56, 139, 253, 0.35); }
+    .sensor-pill.fused { background: var(--fused-tag-bg); color: var(--fused-tag); border: 1px solid var(--fused-border); }
+    .sensor-pill.mono { background: var(--mono-tag-bg); color: var(--mono-tag); border: 1px solid rgba(201, 209, 217, 0.25); }
+    
+    .active-name { font-size: 15px; font-weight: 650; line-height: 1.25; margin: 3px 0; }
+    .active-detail { color: var(--muted); font-size: 11px; line-height: 1.4; margin-top: 4px; }
+    
+    .toggle-rep-btn {
+      margin-top: 10px; width: 100%; padding: 6px 10px; border: 1px solid #30363d;
+      border-radius: 4px; background: #161f2c; color: #c9d1d9; font-size: 11px;
+      font-weight: 600; cursor: pointer; transition: all .15s ease;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .toggle-rep-btn:hover {
+      background: #1f2d40; border-color: var(--accent); color: #fff;
+    }
+    
+    /* Controls Section */
+    .slider-row { margin-bottom: 9px; }
+    .slider-header { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; margin-bottom: 5px; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .toggles { display: grid; gap: 8px; margin-top: 10px; }
+    .toggle { display: flex; align-items: center; gap: 8px; color: #c5cdd4; font-size: 11px; cursor: pointer; }
+    .toggle input { accent-color: var(--accent); cursor: pointer; }
+    
+    /* Tier Cards */
+    .tier-cards { display: grid; gap: 5px; }
+    .tier-card-btn {
+      display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: center; gap: 9px;
+      width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px;
+      background: #11161d; text-align: left; cursor: pointer; transition: all .12s ease;
+    }
+    .tier-card-btn:hover { background: var(--raised); border-color: #30363d; }
+    .tier-card-btn.active { border-color: #388bfd; background: #14202e; }
+    .tier-radio {
+      width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid #485b6e;
+      display: grid; place-items: center;
+    }
+    .tier-card-btn.active .tier-radio { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 6px rgba(88, 166, 255, 0.4); }
+    .tier-title { font-size: 12px; font-weight: 600; }
+    .tier-sub { font-size: 9.5px; color: var(--muted); margin-top: 2px; }
+    
+    /* Sensor Accordion */
+    .sensor-accordion {
+      margin-top: 12px; border: 1px solid var(--line); border-radius: 5px; background: #0b0f14; overflow: hidden;
+    }
+    .sensor-summary {
+      padding: 9px 10px; font-size: 11px; font-weight: 600; color: #c9d1d9; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between; background: #12171f;
+      user-select: none;
+    }
+    .sensor-summary:hover { color: #fff; background: #171d27; }
+    .sensor-summary span.badge { font-size: 9.5px; color: var(--muted); font-weight: 500; }
+    
+    .sensor-filter-strip {
+      display: flex; gap: 4px; padding: 6px 8px; border-bottom: 1px solid var(--line);
+      background: #0d1218; overflow-x: auto;
+    }
+    .sensor-filter-btn {
+      padding: 3px 7px; border: 1px solid var(--line); border-radius: 4px;
+      background: transparent; color: var(--muted); font-size: 10px; font-weight: 500; cursor: pointer;
+      transition: all .12s ease; white-space: nowrap;
+    }
+    .sensor-filter-btn:hover { color: var(--text); background: var(--raised); }
+    .sensor-filter-btn.active { color: #fff; background: var(--accent-bg); border-color: var(--accent); font-weight: 600; }
+
+    .sensor-list { padding: 6px; display: grid; gap: 4px; max-height: 290px; overflow-y: auto; }
+    .sensor-item {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 6px;
+      padding: 6px 8px; border-radius: 4px; border: 1px solid var(--line); background: #0e131a;
+      transition: all .12s ease;
+    }
+    .sensor-item:hover { border-color: #30363d; background: #131a24; }
+    .sensor-item.active { border-color: #388bfd; background: #152230; }
+    .sensor-item-info { min-width: 0; }
+    .sensor-item-name { font-size: 11.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sensor-item-sub { font-size: 9.5px; color: var(--muted); margin-top: 1px; }
+    
+    .sensor-actions { display: inline-flex; align-items: center; gap: 4px; }
+    .sensor-action-btn {
+      padding: 3px 7px; border-radius: 3px; font-size: 10px; font-weight: 600;
+      border: 1px solid transparent; cursor: pointer; transition: all .12s ease;
+    }
+    .sensor-action-btn.fused-action {
+      background: var(--fused-tag-bg); color: var(--fused-tag); border-color: var(--fused-border);
+    }
+    .sensor-action-btn.fused-action:hover {
+      background: rgba(163, 113, 247, 0.3); color: #fff;
+    }
+    .sensor-action-btn.fused-action.active {
+      background: #7b42bc; color: #fff; border-color: #9d5fe6; box-shadow: 0 0 6px rgba(163, 113, 247, 0.4);
+    }
+    .sensor-action-btn.mono-action {
+      background: var(--mono-tag-bg); color: var(--mono-tag); border-color: rgba(201, 209, 217, 0.25);
+    }
+    .sensor-action-btn.mono-action:hover {
+      background: rgba(201, 209, 217, 0.2); color: #fff;
+    }
+    .sensor-action-btn.mono-action.active {
+      background: #485b6e; color: #fff; border-color: #6a829c; box-shadow: 0 0 6px rgba(201, 209, 217, 0.3);
+    }
+    .sensor-action-btn.color-action {
+      background: var(--color-tag-bg); color: var(--color-tag); border-color: rgba(56, 139, 253, 0.35);
+    }
+    .sensor-action-btn.color-action:hover {
+      background: rgba(56, 139, 253, 0.3); color: #fff;
+    }
+    .sensor-action-btn.color-action.active {
+      background: #1f6feb; color: #fff; border-color: #388bfd;
+    }
+
+    .locate-btn {
+      padding: 3px 6px; border: 1px solid var(--line-strong); border-radius: 3px;
+      background: transparent; color: #8b949e; font-size: 10px; font-weight: 500; cursor: pointer;
+    }
+    .locate-btn:hover { color: #fff; border-color: var(--accent); background: var(--raised-hover); }
+    
+    .footnote {
+      padding: 11px 14px; color: #6e7681; font-size: 9.5px; line-height: 1.45;
+      border-top: 1px solid var(--line); margin-top: auto;
+    }
+    
+    /* Layer Stack Compositor */
+    .stack-preset-bar {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 7px;
+    }
+    .stack-preset-btn {
+      padding: 5px 6px; border: 1px solid var(--line-strong); border-radius: 4px;
+      background: #121820; color: #c9d1d9; font-size: 10.5px; font-weight: 600;
+      cursor: pointer; transition: all .15s ease; text-align: center; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .stack-preset-btn:hover { background: var(--raised-hover); border-color: var(--accent); color: #fff; }
+    .stack-preset-btn.highlight {
+      background: #182838; border-color: #388bfd; color: #dff2ff;
+    }
+
+    .edge-nav-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 4px;
+      padding: 5px 8px; background: #0e151d; border: 1px solid #233446; border-radius: 5px;
+      margin-bottom: 8px;
+    }
+    .edge-nav-title { font-size: 10px; font-weight: 600; color: #9ab0c4; white-space: nowrap; }
+    .edge-nav-btns { display: flex; gap: 3px; }
+    .edge-btn {
+      padding: 2px 6px; border: 1px solid #304458; border-radius: 3px;
+      background: #162230; color: #d0e4f7; font-size: 9.5px; font-weight: 600; cursor: pointer;
+      transition: all .12s ease;
+    }
+    .edge-btn:hover { background: #20354c; border-color: var(--accent); color: #fff; }
+
+    .stack-direction-hint {
+      display: flex; align-items: center; justify-content: space-between;
+      color: #6e7681; font-size: 9px; font-weight: 600; letter-spacing: .05em;
+      text-transform: uppercase; margin: 4px 2px 6px 2px;
+    }
+
+    .stack-list { display: grid; gap: 5px; margin-bottom: 10px; }
+    
+    .stack-item {
+      padding: 6px 8px; border: 1px solid var(--line); border-radius: 5px;
+      background: #10151c; transition: all .12s ease;
+    }
+    .stack-item.checked {
+      border-color: #2b3d52; background: #131b24;
+    }
+    .stack-item.top-layer {
+      border-color: #388bfd; box-shadow: 0 0 6px rgba(56, 139, 253, 0.2);
+    }
+    .stack-item-row {
+      display: grid; grid-template-columns: 18px minmax(0, 1fr) auto auto;
+      align-items: center; gap: 6px;
+    }
+    .stack-checkbox {
+      width: 14px; height: 14px; accent-color: var(--accent); cursor: pointer; margin: 0;
+    }
+    .stack-item-info { min-width: 0; }
+    .stack-item-name {
+      font-size: 11px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .stack-item-sub {
+      font-size: 9px; color: var(--muted); margin-top: 1px; display: flex; align-items: center; gap: 4px;
+    }
+    .stack-order-btns { display: inline-flex; align-items: center; gap: 2px; }
+    .order-btn {
+      width: 20px; height: 20px; display: grid; place-items: center; padding: 0;
+      border: 1px solid var(--line-strong); border-radius: 3px; background: #161b22;
+      color: #8b949e; font-size: 10px; cursor: pointer; transition: all .1s ease;
+    }
+    .order-btn:hover:not(:disabled) {
+      color: #fff; background: var(--raised-hover); border-color: var(--accent);
+    }
+    .order-btn:disabled { opacity: 0.2; cursor: default; }
+
+    .stack-depth-badge {
+      font-size: 8.5px; font-weight: 700; text-transform: uppercase; padding: 2px 5px;
+      border-radius: 3px; background: #1a222d; color: #8b949e; border: 1px solid #283340;
+    }
+    .stack-depth-badge.top {
+      background: rgba(56, 139, 253, 0.2); color: var(--accent); border-color: rgba(56, 139, 253, 0.4);
+    }
+
+    .stack-item-slider-row {
+      margin-top: 5px; padding-top: 4px; border-top: 1px solid #1a232e;
+      display: flex; align-items: center; gap: 6px; font-size: 9.5px; color: var(--muted);
+    }
+    .stack-item-slider-row input[type="range"] {
+      flex: 1; height: 4px; accent-color: var(--accent);
+    }
+    .stack-item-slider-row span.val {
+      min-width: 28px; text-align: right; font-variant-numeric: tabular-nums;
+    }
+    .stack-remove-btn {
+      padding: 1px 4px; border: 1px solid transparent; border-radius: 2px;
+      background: transparent; color: #6e7681; font-size: 11px; cursor: pointer; line-height: 1;
+    }
+    .stack-remove-btn:hover { color: #f85149; background: rgba(248, 81, 73, 0.15); }
+
+    /* Viewport */
+    main { min-width: 0; min-height: 0; position: relative; background: #050608; }
+    #viewer { position: absolute; inset: 0; background: #050608; }
+    #footprints { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+    #footprints polygon { fill: rgba(88,166,255,.03); stroke: rgba(88,166,255,.8); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+    #footprints polygon.highlighted { stroke: #58a6ff; stroke-width: 2.2; fill: rgba(88,166,255,.12); }
+    #footprints text { fill: #c9d1d9; font: 600 11px ui-monospace, monospace; paint-order: stroke; stroke: #05070a; stroke-width: 3px; }
+    
+    .viewport-status {
+      position: absolute; z-index: 6; left: 14px; bottom: 14px;
+      display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+      border: 1px solid rgba(48,54,61,.85); border-radius: 5px;
+      background: rgba(13,17,23,.9); backdrop-filter: blur(8px); pointer-events: none;
+    }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); }
+    #status { color: #c9d1d9; font-size: 11px; }
+    
+    /* Floating Mode Toast */
+    .mode-toast {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 8; padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      background: rgba(13, 17, 23, 0.94); border: 1px solid #30363d;
+      color: #f0f6fc; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65); pointer-events: none;
+      opacity: 0; transition: opacity .25s ease, transform .25s ease;
+    }
+    .mode-toast.visible { opacity: 1; transform: translateX(-50%) translateY(4px); }
+    
+    .loading { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; background: #080a0d; transition: opacity .25s; }
+    .loading.hidden { opacity: 0; pointer-events: none; }
+      html, body {
+      overscroll-behavior: none;
+      -webkit-touch-callout: none;
+    }
+    #viewer {
+      touch-action: none;
+    }
+
+    .sidebar-toggle-btn {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 9px;
+      background: var(--raised);
+      border: 1px solid var(--line-strong);
+      border-radius: 5px;
+      color: var(--text);
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .sidebar-toggle-btn:hover {
+      background: var(--raised-hover);
+      border-color: var(--accent);
+    }
+    .aside-mobile-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #090c10;
+    }
+    .aside-mobile-header span {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .aside-close-btn {
+      padding: 3px 8px;
+      background: #161b22;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .aside-close-btn:hover {
+      color: #fff;
+      border-color: #f85149;
+    }
+    .mobile-fab-btn {
+      display: none;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 20;
+      padding: 9px 15px;
+      background: #1f6feb;
+      color: #fff;
+      border: 1px solid #388bfd;
+      border-radius: 24px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
+      cursor: pointer;
+      align-items: center;
+      gap: 6px;
+    }
+    .mobile-fab-btn:hover {
+      background: #388bfd;
+    }
+
+    @media (max-width: 880px) {
+      .sidebar-toggle-btn {
+        display: inline-flex;
+      }
+      .mobile-fab-btn {
+        display: inline-flex;
+      }
+      .topbar {
+        grid-template-columns: auto auto minmax(0, 1fr) auto;
+        padding: 0 10px;
+        gap: 8px;
+      }
+      .brand-copy .eyebrow {
+        display: none;
+      }
+      .brand-title {
+        font-size: 12px;
+      }
+      .mode-strip {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 0 2px;
+      }
+      .mode-strip::-webkit-scrollbar {
+        display: none;
+      }
+      .mode-button {
+        padding: 4px 7px;
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      .rep-strip .rep-btn {
+        padding: 3px 6px;
+        font-size: 10px;
+      }
+      .zoom-readout {
+        display: none;
+      }
+      .reset-button {
+        padding: 4px 6px;
+        font-size: 9.5px;
+      }
+
+      .workspace {
+        display: block;
+        position: relative;
+        height: 100%;
+      }
+      aside {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: min(340px, 86vw);
+        z-index: 100;
+        background: #0d1117;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.75);
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      aside.drawer-open {
+        transform: translateX(0);
+      }
+      .aside-mobile-header {
+        display: flex;
+      }
+      .sidebar-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(2px);
+        z-index: 90;
+      }
+      .sidebar-backdrop.visible {
+        display: block;
+      }
+      main {
+        position: absolute;
+        inset: 0;
+      }
+      .viewport-status {
+        left: 10px;
+        bottom: 10px;
+        max-width: 55%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 9.5px;
+        padding: 3px 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <button class="sidebar-toggle-btn" id="mobile-sidebar-toggle" type="button" title="Toggle Layer Controls & Settings">
+        Layers
+      </button>
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div class="brand-copy">
+          <div class="eyebrow">Arizona Camera Lab · Heterogeneous Rig</div>
+          <div class="brand-title">Gigapixel Multi-Scale Viewer</div>
+        </div>
+      </div>
+      <nav class="mode-strip" aria-label="Focal navigation">
+        <button class="mode-button" type="button" data-mode="stack" title="Multi-Layer Compositor (Checkboxes & Stacking Order)">Layer Stack</button>
+        <button class="mode-button active" type="button" data-mode="auto" title="Automatic multi-scale zoom (Wide -> 12mm -> Close A+B)">Auto Zoom</button>
+        <button class="mode-button" type="button" data-mode="wide" title="Wide Color Panorama (8FF9)">1 Wide</button>
+        <button class="mode-button" type="button" data-mode="tier-12mm" title="12 mm Stitched Array (6450 + 643D)">2 12 mm</button>
+        <button class="mode-button" type="button" data-mode="tier-telephoto" title="Close A + B Stitched Array (6 cameras)">3 Close A+B</button>
+        <button class="mode-button" type="button" data-mode="tier-mono-array" title="All-Monochrome Array Stitched (8 cameras)">4 All-Mono</button>
+      </nav>
+      <div class="top-actions">
+        <div class="rep-strip" title="Toggle Detail Representation across all tiers and cameras (Press M)">
+          <button class="rep-btn fused-btn active" type="button" data-rep="fused">Color Fused</button>
+          <button class="rep-btn mono-btn" type="button" data-rep="mono">Native Mono</button>
+        </div>
+        <div class="zoom-readout" id="zoom-readout">1.00×</div>
+        <button class="reset-button" type="button" id="reset-view" title="Reset view to whole panorama (Space)">Reset view</button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+      <aside id="sidebar-panel">
+        <div class="aside-mobile-header">
+          <span>Layers &amp; Controls</span>
+          <button type="button" class="aside-close-btn" id="aside-close" title="Close panel">✕</button>
+        </div>
+        <div class="scroll">
+          <!-- Active Layer Info -->
+          <section class="section">
+            <div class="active-card">
+              <div class="active-top">
+                <span class="active-kicker" id="active-kicker">Automatic Deep Zoom</span>
+                <span class="sensor-pill fused" id="active-sensor-badge">Color Fused</span>
+              </div>
+              <div class="active-name" id="active-name">Wide Color Panorama</div>
+              <div class="active-detail" id="active-detail">Loading multiscale array…</div>
+              <button type="button" class="toggle-rep-btn" id="toggle-rep-btn">
+                Switch to Native Mono (M)
+              </button>
+            </div>
+          </section>
+
+          <!-- Display & Opacity Controls -->
+          <section class="section">
+            <div class="slider-row">
+              <div class="slider-header">
+                <span>Active-layer opacity</span>
+                <span id="blend-value">100%</span>
+              </div>
+              <input id="blend" type="range" min="0" max="1" step="0.01" value="1" aria-label="Active layer opacity">
+            </div>
+            <div class="slider-row" id="context-slider-row" style="margin-top: 8px;">
+              <div class="slider-header">
+                <span>Wide color context underlay</span>
+                <span id="context-blend-value">60%</span>
+              </div>
+              <input id="context-blend" type="range" min="0" max="1" step="0.01" value="0.6" aria-label="Wide color context opacity">
+            </div>
+            <div class="toggles">
+              <label class="toggle" title="Keep wide color panorama visible underneath mono cameras/tiers">
+                <input id="show-context" type="checkbox" checked> Color underlay for mono
+              </label>
+              <label class="toggle" title="Show camera field-of-view polygons and labels">
+                <input id="show-footprints" type="checkbox"> Camera boundaries
+              </label>
+              <label class="toggle" title="Enable bilinear tile interpolation">
+                <input id="smooth" type="checkbox" checked> Smooth interpolation
+              </label>
+            </div>
+          </section>
+
+          <!-- Layer Compositor & Stack Section -->
+          <section class="section">
+            <div class="section-title">
+              <h2>Layer Compositor (Stack)</h2>
+              <span id="stack-count-indicator">3 Active</span>
+            </div>
+
+            <!-- Quick Comparison Presets -->
+            <div class="stack-preset-bar">
+              <button type="button" class="stack-preset-btn highlight" id="preset-high-over-low" title="Stack High-Res Close Detail on top of Low-Res 12mm and zoom to field edge">
+                High-Res over Low-Res
+              </button>
+              <button type="button" class="stack-preset-btn" id="preset-low-over-high" title="Invert stack: Low-Res 12mm on top of High-Res Close Detail">
+                Low-Res over High-Res
+              </button>
+              <button type="button" class="stack-preset-btn" id="preset-mono-stack" title="Compare High-Res Mono over Low-Res Fused">
+                Mono over Fused
+              </button>
+              <button type="button" class="stack-preset-btn" id="preset-auto-mode" title="Switch back to scroll-based automatic focal switching">
+                Auto Zoom Mode
+              </button>
+            </div>
+
+            <!-- Telephoto Field Edge Quick Navigation -->
+            <div class="edge-nav-bar">
+              <span class="edge-nav-title">Field Edge:</span>
+              <div class="edge-nav-btns">
+                <button type="button" class="edge-btn" data-edge="left" title="Zoom to Left boundary of telephoto array">Left</button>
+                <button type="button" class="edge-btn" data-edge="right" title="Zoom to Right boundary of telephoto array">Right</button>
+                <button type="button" class="edge-btn" data-edge="top" title="Zoom to Top boundary of telephoto array">Top</button>
+                <button type="button" class="edge-btn" data-edge="bottom" title="Zoom to Bottom boundary of telephoto array">Bottom</button>
+                <button type="button" class="edge-btn" data-edge="center" title="Zoom to Center of telephoto array">Center</button>
+              </div>
+            </div>
+
+            <div class="stack-direction-hint">
+              <span>▲ Top (Foreground / Drawn Over)</span>
+              <span>▼ Bottom (Background)</span>
+            </div>
+
+            <!-- Active Layer Stack (Interactive Checkboxes, Up/Down reorder, Opacity Sliders) -->
+            <div class="stack-list" id="layer-stack-container"></div>
+
+            <!-- Add More Views & Individual Cameras Accordion -->
+            <details class="sensor-accordion" id="more-layers-accordion">
+              <summary class="sensor-summary">
+                <span>Add More Layers &amp; Sensors to Stack</span>
+                <span class="badge" id="camera-count-badge">20 available</span>
+              </summary>
+              <div class="sensor-filter-strip">
+                <button type="button" class="sensor-filter-btn active" data-filter="all">All</button>
+                <button type="button" class="sensor-filter-btn" data-filter="fused">Color Fused</button>
+                <button type="button" class="sensor-filter-btn" data-filter="mono">Unfused Mono</button>
+                <button type="button" class="sensor-filter-btn" data-filter="color">Native Color</button>
+              </div>
+              <div class="sensor-list" id="individual-camera-list"></div>
+            </details>
+          </section>
+        </div>
+
+        <div class="footnote">
+          <b>Shortcuts:</b> Scroll to zoom · <kbd>M</kbd> toggle Color/Mono · <kbd>0</kbd>–<kbd>4</kbd> focal modes · <kbd>Space</kbd> reset view.<br>
+          Highest-resolution color warp (642F 1.66× / 8FF9 1.00×) + DIS optical flow. Frame 300.
+        </div>
+      </aside>
+
+      <main>
+        <div id="viewer" aria-label="Registered multiscale gigapixel array"></div>
+        <svg id="footprints" aria-hidden="true"></svg>
+        <div class="mode-toast" id="mode-toast">Representation: Color Fused</div>
+        <div class="viewport-status"><span class="status-dot"></span><span id="status">Loading multiscale array…</span></div>
+        <button class="mobile-fab-btn" id="mobile-fab" type="button" title="Open Layer Controls">Layers</button>
+        <div class="loading" id="loading"><div class="loading-copy" id="loading-copy">Loading 0 / 25 layers</div></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="vendor/openseadragon/openseadragon.min.js"></script>
+  <script>
+    if (typeof OpenSeadragon === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js"><\/script>');
+    }
+  </script>
+  <script>
+    const viewer = OpenSeadragon({
+      id: 'viewer',
+      prefixUrl: 'vendor/openseadragon/images/',
+      showNavigator: true,
+      navigatorPosition: 'TOP_RIGHT',
+      navigatorSizeRatio: 0.16,
+      showNavigationControl: true,
+      showRotationControl: false,
+      animationTime: 0.32,
+      blendTime: 0.10,
+      maxZoomPixelRatio: 6,
+      minZoomImageRatio: 0.72,
+      visibilityRatio: 0.05,
+      constrainDuringPan: false,
+      preserveViewport: true,
+      gestureSettingsTouch: {
+        pinchRotate: false,
+        scrollToZoom: false,
+        clickToZoom: false,
+        dblClickToZoom: true,
+        pinchToZoom: true
+      }
+    });
+
+    const state = {
+      metadata: null,
+      layers: new Map(),
+      items: new Map(),
+      mode: 'auto', // 'auto', 'stack', 'wide', 'tier-12mm', 'tier-telephoto', 'tier-mono-array', or specific camera
+      representation: 'fused', // 'fused' (default!) or 'mono'
+      sensorFilter: 'all', // 'all', 'fused', 'mono', 'color'
+      activeLayerId: 'composite-color-base',
+      showContext: true,
+      contextOpacity: 0.60,
+      blend: 1.0,
+      loaded: 0,
+      edgeIndex: 0,
+      // Layer stack order: index 0 is TOP (Foreground / drawn last over everything)
+      layerStack: [
+        { id: 'tier-telephoto', visible: true, opacity: 1.0 },
+        { id: 'tier-12mm', visible: true, opacity: 1.0 },
+        { id: 'composite-color-base', visible: true, opacity: 0.85 },
+        { id: 'tier-telephoto-mono', visible: false, opacity: 1.0 },
+        { id: 'tier-12mm-mono', visible: false, opacity: 1.0 }
+      ]
+    };
+
+    const byId = id => document.getElementById(id);
+    const status = byId('status');
+    const footprintSvg = byId('footprints');
+    const toast = byId('mode-toast');
+    let toastTimeout = null;
+
+    function showToast(text) {
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toast.textContent = text;
+      toast.classList.add('visible');
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 1600);
+    }
+
+    function setOpacity(id, opacity) {
+      const item = state.items.get(id);
+      if (item && Math.abs(item.getOpacity() - opacity) > 0.002) {
+        item.setOpacity(opacity);
+      }
+      const layer = state.layers.get(id);
+      if (layer) layer.opacity = opacity;
+    }
+
+    function relativeZoom() {
+      const home = viewer.viewport.getHomeZoom();
+      return home ? viewer.viewport.getZoom(true) / home : 1;
+    }
+
+    function currentAutoSource(zoom) {
+      if (zoom < 1.9) return null;
+      const isMono = (state.representation === 'mono');
+      if (zoom >= 3.6) {
+        const id = isMono ? 'tier-telephoto-mono' : 'tier-telephoto';
+        if (state.layers.has(id)) {
+          return {
+            id: id,
+            layer: state.layers.get(id),
+            label: isMono ? 'Close Detail A + B (Native Mono)' : 'Close Detail A + B (Color Fused)',
+            shortLabel: isMono ? 'Close A+B Mono' : 'Close A+B Fused',
+            channel: isMono ? 'mono' : 'color',
+            fused: !isMono
+          };
+        }
+      }
+      if (zoom >= 1.9) {
+        const id = isMono ? 'tier-12mm-mono' : 'tier-12mm';
+        if (state.layers.has(id)) {
+          return {
+            id: id,
+            layer: state.layers.get(id),
+            label: isMono ? '12 mm Stitched (Native Mono)' : '12 mm Stitched (Color Fused)',
+            shortLabel: isMono ? '12 mm Mono' : '12 mm Fused',
+            channel: isMono ? 'mono' : 'color',
+            fused: !isMono
+          };
+        }
+      }
+      return null;
+    }
+
+    function applyVisibility() {
+      if (!state.metadata) return;
+      const zoom = relativeZoom();
+      const isMono = (state.representation === 'mono');
+
+      let activeId = 'composite-color-base';
+      let kicker = 'Automatic Deep Zoom';
+      let title = 'Wide Color Panorama';
+      let detail = '8FF9 color reference · whole scene overview';
+      let badgeType = 'fused';
+      let badgeLabel = 'Color Fused';
+
+      if (state.mode === 'stack') {
+        // Multi-Layer Compositor mode
+        const visibleEntries = state.layerStack.filter(entry => entry.visible && state.items.has(entry.id));
+        const bottomToTop = [...visibleEntries].reverse();
+
+        // Enforce z-index in OpenSeadragon: bottomToTop items are pushed to the end in order
+        bottomToTop.forEach(entry => {
+          const item = state.items.get(entry.id);
+          if (item) {
+            viewer.world.setItemIndex(item, viewer.world.getItemCount() - 1);
+            setOpacity(entry.id, entry.opacity);
+          }
+        });
+
+        // Hide all layers not currently visible in the stack
+        const visibleSet = new Set(visibleEntries.map(e => e.id));
+        state.layers.forEach((layer, id) => {
+          if (!visibleSet.has(id)) {
+            setOpacity(id, 0);
+          }
+        });
+
+        const topEntry = visibleEntries[0];
+        const topLayer = topEntry ? state.layers.get(topEntry.id) : null;
+        activeId = topEntry ? topEntry.id : 'composite-color-base';
+        kicker = 'Layer Compositor · Stack Active';
+        title = topLayer ? topLayer.label : 'Custom Compositor Stack';
+        detail = `${visibleEntries.length} active layers composited · Top: ${topLayer ? topLayer.shortLabel : 'None'} (${Math.round((topEntry ? topEntry.opacity : 1) * 100)}%)`;
+        badgeType = topLayer ? (topLayer.fused ? 'fused' : (topLayer.channel === 'mono' ? 'mono' : 'color')) : 'fused';
+        badgeLabel = topLayer ? (topLayer.fused ? 'Color Fused' : (topLayer.channel === 'mono' ? 'Native Mono' : 'Native Color')) : 'Stack';
+
+      } else if (state.mode === 'auto') {
+        const autoTier = currentAutoSource(zoom);
+        if (autoTier) {
+          activeId = autoTier.id;
+          title = autoTier.label;
+          kicker = 'Auto Zoom · Stitched Tier';
+          detail = `${autoTier.layer.cameras.length} cameras · ${autoTier.layer.resolutionScale.toFixed(2)}× scale · ${autoTier.layer.pixelWidth}×${autoTier.layer.pixelHeight} px`;
+          badgeType = autoTier.fused ? 'fused' : 'mono';
+          badgeLabel = autoTier.fused ? 'Color Fused' : 'Native Mono';
+        } else {
+          activeId = 'composite-color-base';
+          title = 'Wide Color Panorama';
+          kicker = 'Auto Zoom · Base Panorama';
+          detail = '8FF9 color reference · 1.00× scale';
+          badgeType = 'color';
+          badgeLabel = 'Native Color';
+        }
+
+        const isBaseActive = (activeId === 'composite-color-base');
+        const activeLayer = state.layers.get(activeId);
+        const isMonoActive = activeLayer && activeLayer.channel === 'mono';
+        const showUnderlay = state.showContext && !isBaseActive && isMonoActive;
+
+        state.layers.forEach((layer, id) => {
+          if (id === activeId) {
+            setOpacity(id, state.blend);
+          } else if (id === 'composite-color-base' && showUnderlay) {
+            setOpacity(id, state.contextOpacity);
+          } else {
+            setOpacity(id, 0);
+          }
+        });
+
+      } else if (state.mode === 'wide') {
+        activeId = 'composite-color-base';
+        title = 'Wide Color Panorama';
+        kicker = 'Panoramic Base';
+        detail = '8FF9 color reference frame · 1.00× scale';
+        badgeType = 'color';
+        badgeLabel = 'Native Color';
+
+        state.layers.forEach((layer, id) => {
+          setOpacity(id, id === activeId ? state.blend : 0);
+        });
+
+      } else if (state.mode.startsWith('tier-')) {
+        const baseTierId = state.mode.replace('-mono', '');
+        activeId = isMono ? `${baseTierId}-mono` : baseTierId;
+        const layer = state.layers.get(activeId);
+        title = layer ? layer.label : state.mode;
+        kicker = 'Stitched Array Tier';
+        detail = layer ? `${layer.cameras ? layer.cameras.length : ''} cameras · ${layer.resolutionScale.toFixed(2)}× scale · ${layer.pixelWidth}×${layer.pixelHeight} px` : '';
+        badgeType = isMono ? 'mono' : 'fused';
+        badgeLabel = isMono ? 'Native Mono' : 'Color Fused';
+
+        const showUnderlay = state.showContext && isMono;
+        state.layers.forEach((l, id) => {
+          if (id === activeId) {
+            setOpacity(id, state.blend);
+          } else if (id === 'composite-color-base' && showUnderlay) {
+            setOpacity(id, state.contextOpacity);
+          } else {
+            setOpacity(id, 0);
+          }
+        });
+
+      } else {
+        // Individual camera sensor selected
+        let camId = state.activeLayerId;
+        if (camId.startsWith('raw-') && !isMono && state.layers.has(camId.replace('raw-', 'pan-'))) {
+          camId = camId.replace('raw-', 'pan-');
+        } else if (camId.startsWith('pan-') && isMono && state.layers.has(camId.replace('pan-', 'raw-'))) {
+          camId = camId.replace('pan-', 'raw-');
+        }
+        activeId = camId;
+        const layer = state.layers.get(activeId);
+        if (layer) {
+          title = layer.label;
+          kicker = `Sensor ${layer.camera}`;
+          if (layer.fused) {
+            badgeType = 'fused';
+            badgeLabel = 'Color Fused';
+          } else if (layer.channel === 'mono') {
+            badgeType = 'mono';
+            badgeLabel = 'Native Mono';
+          } else {
+            badgeType = 'color';
+            badgeLabel = 'Native Color';
+          }
+          detail = layer.registrationParent
+            ? `${layer.resolutionScale.toFixed(2)}× native scale · ${layer.pixelWidth}×${layer.pixelHeight} px · parent ${layer.registrationParent}`
+            : 'Reference coordinate frame';
+        }
+
+        const showUnderlay = state.showContext && layer && layer.channel === 'mono';
+        state.layers.forEach((l, id) => {
+          if (id === activeId) {
+            setOpacity(id, state.blend);
+          } else if (id === 'composite-color-base' && showUnderlay) {
+            setOpacity(id, state.contextOpacity);
+          } else {
+            setOpacity(id, 0);
+          }
+        });
+      }
+
+      state.activeLayerId = activeId;
+
+      // Update Active Card
+      byId('active-kicker').textContent = kicker;
+      byId('active-name').textContent = title;
+      byId('active-detail').textContent = detail;
+      const badge = byId('active-sensor-badge');
+      badge.textContent = badgeLabel;
+      badge.className = `sensor-pill ${badgeType}`;
+
+      // Update toggle button text
+      const toggleBtn = byId('toggle-rep-btn');
+      if (isMono) {
+        toggleBtn.textContent = 'Switch to Color Fused (M)';
+      } else {
+        toggleBtn.textContent = 'Switch to Native Mono (M)';
+      }
+
+      // Update zoom readout and status toast
+      byId('zoom-readout').textContent = `${zoom.toFixed(2)}×`;
+      status.textContent = `${title} · ${zoom.toFixed(2)}× zoom · ${badgeLabel}`;
+
+      // Update stack count badge
+      const activeCount = state.layerStack.filter(e => e.visible).length;
+      byId('stack-count-indicator').textContent = state.mode === 'stack' ? `${activeCount} Active (Compositor)` : `${activeCount} in Stack`;
+
+      // Update topbar buttons
+      document.querySelectorAll('.mode-button').forEach(btn => {
+        const m = btn.dataset.mode;
+        let active = false;
+        if (state.mode === 'stack') active = (m === 'stack');
+        else if (state.mode === 'auto') active = (m === 'auto');
+        else if (m === 'wide') active = (state.mode === 'wide' || activeId === 'composite-color-base');
+        else if (m.startsWith('tier-')) active = (state.mode === m || activeId === m || activeId === `${m}-mono`);
+        btn.classList.toggle('active', active);
+      });
+
+      // Update sidebar tier buttons
+      document.querySelectorAll('.tier-card-btn').forEach(btn => {
+        const m = btn.dataset.mode;
+        let active = false;
+        if (state.mode === 'stack') active = (m === 'stack');
+        else if (state.mode === 'auto') active = (m === 'auto');
+        else if (m === 'wide') active = (state.mode === 'wide' || activeId === 'composite-color-base');
+        else if (m.startsWith('tier-')) active = (state.mode === m || activeId === m || activeId === `${m}-mono`);
+        btn.classList.toggle('active', active);
+      });
+
+      // Update representation switch strip buttons
+      document.querySelectorAll('.rep-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.rep === state.representation);
+      });
+
+      drawFootprints();
+    }
+
+    function renderLayerStackUI() {
+      const container = byId('layer-stack-container');
+      container.replaceChildren();
+
+      const visibleEntries = state.layerStack.filter(e => e.visible);
+
+      state.layerStack.forEach((entry, idx) => {
+        const layer = state.layers.get(entry.id);
+        if (!layer) return;
+
+        const itemEl = document.createElement('div');
+        itemEl.className = `stack-item${entry.visible ? ' checked' : ''}${idx === 0 && entry.visible ? ' top-layer' : ''}`;
+
+        let depthBadge = '<span class="stack-depth-badge">Off</span>';
+        if (entry.visible) {
+          if (idx === 0) {
+            depthBadge = '<span class="stack-depth-badge top" title="Top layer: drawn over everything underneath">Top (Over)</span>';
+          } else if (entry === visibleEntries[visibleEntries.length - 1]) {
+            depthBadge = '<span class="stack-depth-badge" title="Lowest visible layer in stack">Base</span>';
+          } else {
+            const vIdx = visibleEntries.indexOf(entry) + 1;
+            depthBadge = `<span class="stack-depth-badge">#${vIdx}</span>`;
+          }
+        }
+
+        const repBadgeClass = layer.fused ? 'fused' : (layer.channel === 'mono' ? 'mono' : 'color');
+        const repBadgeText = layer.fused ? 'Fused' : (layer.channel === 'mono' ? 'Mono' : 'Color');
+        const scaleText = layer.resolutionScale ? `${layer.resolutionScale.toFixed(2)}×` : '1.00×';
+
+        itemEl.innerHTML = `
+          <div class="stack-item-row">
+            <input type="checkbox" class="stack-checkbox" title="Toggle visibility in compositor" ${entry.visible ? 'checked' : ''}>
+            <div class="stack-item-info">
+              <div class="stack-item-name" title="${layer.label}">${layer.shortLabel || layer.label}</div>
+              <div class="stack-item-sub">
+                <span class="sensor-pill ${repBadgeClass}">${repBadgeText}</span>
+                <span>${scaleText}</span>
+                <span>· ${layer.pixelWidth}×${layer.pixelHeight}</span>
+              </div>
+            </div>
+            <div class="stack-order-btns">
+              <button type="button" class="order-btn move-up" title="Move Up (toward top/foreground)" ${idx === 0 ? 'disabled' : ''}>▲</button>
+              <button type="button" class="order-btn move-down" title="Move Down (toward background)" ${idx === state.layerStack.length - 1 ? 'disabled' : ''}>▼</button>
+            </div>
+            <div class="stack-depth-container">
+              ${depthBadge}
+            </div>
+          </div>
+          <div class="stack-item-slider-row">
+            <span>Opacity</span>
+            <input type="range" class="stack-slider" min="0" max="1" step="0.01" value="${entry.opacity}">
+            <span class="val">${Math.round(entry.opacity * 100)}%</span>
+            <button type="button" class="locate-btn fit-btn" title="Zoom to layer bounds">Fit</button>
+            ${state.layerStack.length > 2 ? `<button type="button" class="stack-remove-btn" title="Remove layer from active stack">✕</button>` : ''}
+          </div>
+        `;
+
+        // Checkbox event
+        const checkbox = itemEl.querySelector('.stack-checkbox');
+        checkbox.addEventListener('change', (e) => {
+          entry.visible = e.target.checked;
+          state.mode = 'stack';
+          renderLayerStackUI();
+          applyVisibility();
+          showToast(`Stack: ${layer.shortLabel || layer.label} is ${entry.visible ? 'Visible' : 'Hidden'}`);
+        });
+
+        // Move Up event
+        const upBtn = itemEl.querySelector('.move-up');
+        if (upBtn) {
+          upBtn.addEventListener('click', () => {
+            if (idx > 0) {
+              const tmp = state.layerStack[idx - 1];
+              state.layerStack[idx - 1] = state.layerStack[idx];
+              state.layerStack[idx] = tmp;
+              state.mode = 'stack';
+              renderLayerStackUI();
+              applyVisibility();
+              showToast(`Moved ${layer.shortLabel || layer.label} Up (Top is drawn over)`);
+            }
+          });
+        }
+
+        // Move Down event
+        const downBtn = itemEl.querySelector('.move-down');
+        if (downBtn) {
+          downBtn.addEventListener('click', () => {
+            if (idx < state.layerStack.length - 1) {
+              const tmp = state.layerStack[idx + 1];
+              state.layerStack[idx + 1] = state.layerStack[idx];
+              state.layerStack[idx] = tmp;
+              state.mode = 'stack';
+              renderLayerStackUI();
+              applyVisibility();
+              showToast(`Moved ${layer.shortLabel || layer.label} Down`);
+            }
+          });
+        }
+
+        // Opacity slider event
+        const slider = itemEl.querySelector('.stack-slider');
+        const valSpan = itemEl.querySelector('.val');
+        slider.addEventListener('input', (e) => {
+          entry.opacity = Number(e.target.value);
+          valSpan.textContent = `${Math.round(entry.opacity * 100)}%`;
+          if (state.mode === 'stack' && entry.visible) {
+            setOpacity(entry.id, entry.opacity);
+          }
+        });
+
+        // Fit button
+        const fitBtn = itemEl.querySelector('.fit-btn');
+        if (fitBtn) {
+          fitBtn.addEventListener('click', () => {
+            const item = state.items.get(entry.id);
+            if (item) {
+              viewer.viewport.fitBounds(item.getBounds(), false);
+            }
+          });
+        }
+
+        // Remove button
+        const removeBtn = itemEl.querySelector('.stack-remove-btn');
+        if (removeBtn) {
+          removeBtn.addEventListener('click', () => {
+            setOpacity(entry.id, 0);
+            state.layerStack.splice(idx, 1);
+            renderLayerStackUI();
+            populateMoreLayers();
+            applyVisibility();
+          });
+        }
+
+        container.appendChild(itemEl);
+      });
+
+      const activeCount = state.layerStack.filter(e => e.visible).length;
+      const mobileToggle = byId('mobile-sidebar-toggle');
+      if (mobileToggle) mobileToggle.textContent = `Layers (${activeCount})`;
+      const mobileFab = byId('mobile-fab');
+      if (mobileFab) mobileFab.textContent = `Layers (${activeCount})`;
+
+      populateMoreLayers();
+    }
+
+    function addLayerToStack(layerId, bringToTop = true) {
+      const existingIdx = state.layerStack.findIndex(e => e.id === layerId);
+      if (existingIdx >= 0) {
+        state.layerStack[existingIdx].visible = true;
+        if (bringToTop && existingIdx > 0) {
+          const item = state.layerStack.splice(existingIdx, 1)[0];
+          state.layerStack.unshift(item);
+        }
+      } else {
+        if (bringToTop) {
+          state.layerStack.unshift({ id: layerId, visible: true, opacity: 1.0 });
+        } else {
+          state.layerStack.push({ id: layerId, visible: true, opacity: 1.0 });
+        }
+      }
+      state.mode = 'stack';
+      renderLayerStackUI();
+      applyVisibility();
+      const l = state.layers.get(layerId);
+      showToast(`Added ${l ? l.label : layerId} to layer stack`);
+    }
+
+    function populateMoreLayers() {
+      const container = byId('individual-camera-list');
+      if (!container || !state.metadata) return;
+      container.replaceChildren();
+
+      const filter = state.sensorFilter || 'all';
+      const stackSet = new Set(state.layerStack.map(e => e.id));
+
+      const allAvailable = state.metadata.layers.filter(l => {
+        if (filter === 'all') return true;
+        if (filter === 'fused') return l.fused === true;
+        if (filter === 'mono') return l.channel === 'mono';
+        if (filter === 'color') return l.channel === 'color' && !l.fused;
+        return true;
+      });
+
+      byId('camera-count-badge').textContent = `${allAvailable.length} available`;
+
+      allAvailable.forEach(layer => {
+        const item = document.createElement('div');
+        item.className = 'sensor-item';
+        item.dataset.sensorId = layer.id;
+
+        const inStack = stackSet.has(layer.id);
+        const repClass = layer.fused ? 'fused' : (layer.channel === 'mono' ? 'mono' : 'color');
+        const repText = layer.fused ? 'Fused' : (layer.channel === 'mono' ? 'Mono' : 'Color');
+        const scaleText = layer.resolutionScale ? `${layer.resolutionScale.toFixed(2)}×` : '1.00×';
+
+        item.innerHTML = `
+          <div class="sensor-item-info">
+            <div class="sensor-item-name">${layer.label}</div>
+            <div class="sensor-item-sub">
+              <span class="sensor-pill ${repClass}">${repText}</span>
+              <span>${scaleText}</span>
+              <span>· ${layer.camera || layer.shortLabel}</span>
+            </div>
+          </div>
+          <div class="sensor-actions">
+            <button type="button" class="sensor-action-btn ${inStack ? 'fused-action' : ''}" data-action="stack" title="${inStack ? 'Bring to top of stack' : 'Add to layer stack'}">
+              ${inStack ? 'In Stack' : '+ Stack'}
+            </button>
+            <button type="button" class="locate-btn" data-action="fit" title="Zoom directly to this layer">Fit</button>
+          </div>
+        `;
+
+        item.addEventListener('click', (e) => {
+          const actionBtn = e.target.closest('[data-action]');
+          const action = actionBtn ? actionBtn.dataset.action : 'default';
+
+          if (action === 'fit') {
+            const osdItem = state.items.get(layer.id);
+            if (osdItem) {
+              viewer.viewport.fitBounds(osdItem.getBounds(), false);
+            }
+          } else if (action === 'stack') {
+            addLayerToStack(layer.id, true);
+          } else {
+            addLayerToStack(layer.id, true);
+          }
+        });
+
+        container.appendChild(item);
+      });
+    }
+
+    function zoomToFieldEdge(edge) {
+      state.mode = 'stack';
+      const homeZoom = viewer.viewport.getHomeZoom();
+      let targetPt = null;
+      let targetZoom = homeZoom * 3.8;
+      let edgeLabel = '';
+
+      if (edge === 'left') {
+        targetPt = new OpenSeadragon.Point(0.3683, 0.4667);
+        edgeLabel = 'Telephoto Left Edge (12mm vs Close Detail)';
+      } else if (edge === 'right') {
+        targetPt = new OpenSeadragon.Point(0.6888, 0.4667);
+        edgeLabel = 'Telephoto Right Edge (12mm vs Close Detail)';
+      } else if (edge === 'top') {
+        targetPt = new OpenSeadragon.Point(0.5285, 0.3956);
+        edgeLabel = 'Telephoto Top Edge (12mm vs Close Detail)';
+      } else if (edge === 'bottom') {
+        targetPt = new OpenSeadragon.Point(0.5285, 0.5377);
+        edgeLabel = 'Telephoto Bottom Edge (12mm vs Close Detail)';
+      } else if (edge === 'center') {
+        targetPt = new OpenSeadragon.Point(0.5285, 0.4667);
+        targetZoom = homeZoom * 4.8;
+        edgeLabel = 'Telephoto Center (4.80× close detail)';
+      }
+
+      if (targetPt) {
+        viewer.viewport.zoomTo(targetZoom, targetPt, false);
+        viewer.viewport.panTo(targetPt, false);
+        showToast(edgeLabel);
+        applyVisibility();
+        if (window.innerWidth <= 880) {
+          closeMobileSidebar();
+        }
+      }
+    }
+
+    const fieldEdges = ['left', 'right', 'top', 'bottom', 'center'];
+    function cycleFieldEdge() {
+      const edge = fieldEdges[state.edgeIndex % fieldEdges.length];
+      state.edgeIndex += 1;
+      zoomToFieldEdge(edge);
+    }
+
+    function toggleRepresentation() {
+      setRepresentation(state.representation === 'fused' ? 'mono' : 'fused');
+    }
+
+    function setRepresentation(rep) {
+      state.representation = rep;
+      showToast(rep === 'fused' ? 'Representation: Color Fused' : 'Representation: Native Mono');
+      applyVisibility();
+    }
+
+    function selectMode(mode) {
+      state.mode = mode;
+      applyVisibility();
+    }
+
+    function drawFootprints() {
+      if (!byId('show-footprints').checked || !state.metadata) {
+        footprintSvg.replaceChildren();
+        return;
+      }
+      const bounds = footprintSvg.getBoundingClientRect();
+      footprintSvg.setAttribute('viewBox', `0 0 ${bounds.width} ${bounds.height}`);
+      const namespace = 'http://www.w3.org/2000/svg';
+      const fragment = document.createDocumentFragment();
+
+      // Show detail tier boundaries
+      const teleLayer = state.layers.get('tier-telephoto');
+      if (teleLayer && teleLayer.footprints) {
+        teleLayer.footprints.forEach(fp => {
+          const points = fp.map(([x, y]) => viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(x, y), true));
+          const polygon = document.createElementNS(namespace, 'polygon');
+          polygon.setAttribute('points', points.map(p => `${p.x},${p.y}`).join(' '));
+          polygon.setAttribute('class', 'highlighted');
+          fragment.appendChild(polygon);
+        });
+      }
+
+      const cameraLayers = [...state.layers.values()].filter(l => l.kind === 'camera-mono' || l.kind === 'camera-color');
+      cameraLayers.forEach(layer => {
+        if (!layer.footprint) return;
+        const points = layer.footprint.map(([x, y]) => viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(x, y), true));
+        const polygon = document.createElementNS(namespace, 'polygon');
+        polygon.setAttribute('points', points.map(p => `${p.x},${p.y}`).join(' '));
+        const isHighlight = (state.activeLayerId.includes(layer.camera.toLowerCase()));
+        polygon.setAttribute('class', isHighlight ? 'highlighted' : (layer.confidence || 'high'));
+        fragment.appendChild(polygon);
+
+        const label = document.createElementNS(namespace, 'text');
+        label.setAttribute('x', points[0].x + 5);
+        label.setAttribute('y', points[0].y + 14);
+        label.textContent = `${layer.camera}`;
+        fragment.appendChild(label);
+      });
+      footprintSvg.replaceChildren(fragment);
+    }
+
+    // Load layers metadata and start loading OpenSeadragon tiles
+    fetch('layers.json')
+      .then(r => r.json())
+      .then(metadata => {
+        state.metadata = metadata;
+        metadata.layers.forEach(layer => {
+          layer.opacity = 0;
+          state.layers.set(layer.id, layer);
+        });
+
+        renderLayerStackUI();
+        byId('loading-copy').textContent = `Loading 0 / ${metadata.layers.length} layers`;
+
+        metadata.layers.forEach(layer => {
+          viewer.addTiledImage({
+            tileSource: layer.tileSource,
+            x: layer.x,
+            y: layer.y,
+            width: layer.width,
+            opacity: 0,
+            success: event => {
+              state.items.set(layer.id, event.item);
+              state.loaded += 1;
+              byId('loading-copy').textContent = `Loading ${state.loaded} / ${metadata.layers.length} layers`;
+              if (state.loaded === metadata.layers.length) {
+                applyVisibility();
+                viewer.viewport.goHome(true);
+                byId('loading').classList.add('hidden');
+              }
+            },
+            error: event => {
+              status.textContent = `Could not load ${layer.label}`;
+              console.error(event);
+            }
+          });
+        });
+      })
+      .catch(error => {
+        byId('loading-copy').textContent = 'Viewer data failed to load';
+        console.error(error);
+      });
+
+    // Topbar & sidebar mode buttons
+    document.querySelectorAll('[data-mode]').forEach(btn => {
+      btn.addEventListener('click', () => selectMode(btn.dataset.mode));
+    });
+
+    // Topbar representation switch buttons
+    document.querySelectorAll('.rep-btn').forEach(btn => {
+      btn.addEventListener('click', () => setRepresentation(btn.dataset.rep));
+    });
+
+    // Individual camera filter buttons in accordion
+    document.querySelectorAll('.sensor-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sensor-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.sensorFilter = btn.dataset.filter;
+        populateMoreLayers();
+      });
+    });
+
+    // Preset buttons
+    byId('preset-high-over-low').addEventListener('click', () => {
+      state.mode = 'stack';
+      state.layerStack = [
+        { id: 'tier-telephoto', visible: true, opacity: 1.0 },
+        { id: 'tier-12mm', visible: true, opacity: 1.0 },
+        { id: 'composite-color-base', visible: true, opacity: 0.85 }
+      ];
+      renderLayerStackUI();
+      zoomToFieldEdge('left');
+      showToast('Preset: High-Res (Close A+B) over Low-Res (12mm) at Left Edge');
+    });
+
+    byId('preset-low-over-high').addEventListener('click', () => {
+      state.mode = 'stack';
+      state.layerStack = [
+        { id: 'tier-12mm', visible: true, opacity: 0.75 },
+        { id: 'tier-telephoto', visible: true, opacity: 1.0 },
+        { id: 'composite-color-base', visible: true, opacity: 0.85 }
+      ];
+      renderLayerStackUI();
+      zoomToFieldEdge('left');
+      showToast('Preset: Low-Res (12mm at 75%) over High-Res (Close A+B)');
+    });
+
+    byId('preset-mono-stack').addEventListener('click', () => {
+      state.mode = 'stack';
+      state.layerStack = [
+        { id: 'tier-telephoto-mono', visible: true, opacity: 0.85 },
+        { id: 'tier-telephoto', visible: true, opacity: 1.0 },
+        { id: 'tier-12mm', visible: true, opacity: 1.0 },
+        { id: 'composite-color-base', visible: true, opacity: 0.85 }
+      ];
+      renderLayerStackUI();
+      zoomToFieldEdge('center');
+      showToast('Preset: Native Mono (85%) over Color Fused');
+    });
+
+    byId('preset-auto-mode').addEventListener('click', () => {
+      selectMode('auto');
+      showToast('Auto Zoom Mode: focal tier switches dynamically on scroll');
+    });
+
+    // Edge navigation buttons
+    document.querySelectorAll('.edge-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        zoomToFieldEdge(btn.dataset.edge);
+      });
+    });
+
+    // Active card toggle button
+    byId('toggle-rep-btn').addEventListener('click', toggleRepresentation);
+
+    // Global Opacity sliders
+    byId('blend').addEventListener('input', e => {
+      state.blend = Number(e.target.value);
+      byId('blend-value').textContent = `${Math.round(state.blend * 100)}%`;
+      applyVisibility();
+    });
+
+    byId('context-blend').addEventListener('input', e => {
+      state.contextOpacity = Number(e.target.value);
+      byId('context-blend-value').textContent = `${Math.round(state.contextOpacity * 100)}%`;
+      applyVisibility();
+    });
+
+    // Toggles
+    byId('show-context').addEventListener('change', e => {
+      state.showContext = e.target.checked;
+      byId('context-slider-row').style.display = state.showContext ? 'block' : 'none';
+      applyVisibility();
+    });
+
+    byId('show-footprints').addEventListener('change', drawFootprints);
+
+    byId('smooth').addEventListener('change', e => {
+      state.items.forEach(item => {
+        if (typeof item.setImageSmoothingEnabled === 'function') {
+          item.setImageSmoothingEnabled(e.target.checked);
+        }
+      });
+    });
+
+    byId('reset-view').addEventListener('click', () => {
+      selectMode('auto');
+      viewer.viewport.goHome(false);
+    });
+
+    // OpenSeadragon viewport event handlers
+    viewer.addHandler('animation', applyVisibility);
+    viewer.addHandler('zoom', applyVisibility);
+    viewer.addHandler('pan', applyVisibility);
+    viewer.addHandler('animation-finish', applyVisibility);
+    viewer.addHandler('resize', drawFootprints);
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', event => {
+      if (event.target.matches('input, button')) return;
+      const modes = {
+        '0': 'auto',
+        '1': 'wide',
+        '2': 'tier-12mm',
+        '3': 'tier-telephoto',
+        '4': 'tier-mono-array'
+      };
+      if (modes[event.key]) selectMode(modes[event.key]);
+      if (event.key === 'm' || event.key === 'M' || event.key === 'f' || event.key === 'F') {
+        toggleRepresentation();
+      }
+      if (event.key === 'e' || event.key === 'E') {
+        cycleFieldEdge();
+      }
+      if (event.code === 'Space') {
+        event.preventDefault();
+        selectMode('auto');
+        viewer.viewport.goHome(false);
+      }
+    });
+
+    // Mobile drawer toggle listeners
+    const sidebarPanel = byId('sidebar-panel');
+    const sidebarBackdrop = byId('sidebar-backdrop');
+    const mobileSidebarToggle = byId('mobile-sidebar-toggle');
+    const asideClose = byId('aside-close');
+    const mobileFab = byId('mobile-fab');
+
+    function openMobileSidebar() {
+      if (sidebarPanel) sidebarPanel.classList.add('drawer-open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.add('visible');
+    }
+    function closeMobileSidebar() {
+      if (sidebarPanel) sidebarPanel.classList.remove('drawer-open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('visible');
+    }
+
+    if (mobileSidebarToggle) mobileSidebarToggle.addEventListener('click', openMobileSidebar);
+    if (mobileFab) mobileFab.addEventListener('click', openMobileSidebar);
+    if (asideClose) asideClose.addEventListener('click', closeMobileSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+  </script>
+</body>
+</html>

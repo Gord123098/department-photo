@@ -1,0 +1,5 @@
+numpy>=2.0
+opencv-python-headless>=4.10
+Pillow>=10.0
+torch>=2.0
+git+https://github.com/cvg/LightGlue.git@eb42fee2d71449efb0aa5c10549752b5d75384d8
