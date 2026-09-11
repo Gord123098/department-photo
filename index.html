@@ -1153,7 +1153,7 @@
             <input type="range" class="stack-slider" min="0" max="1" step="0.01" value="${entry.opacity}">
             <span class="val">${Math.round(entry.opacity * 100)}%</span>
             <button type="button" class="locate-btn fit-btn" title="Zoom to layer bounds">Fit</button>
-            ${state.layerStack.length > 2 ? `<button type="button" class="stack-remove-btn" title="Remove layer from active stack">✕</button>` : ''}
+            ${state.layerStack.length > 2 ? `<button type="button" class="stack-remove-btn" title="Remove layer from active stack">&times;</button>` : ''}
           </div>
         `;
 
