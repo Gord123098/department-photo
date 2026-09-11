@@ -2,8 +2,9 @@
 
 Interactive, multi-scale deep zoom viewer for the department camera array, registered into a unified coordinate frame.
 
-**Live Interactive Web Viewer (GitHub Pages):**
-- [https://gord123098.github.io/department-photo/](https://gord123098.github.io/department-photo/)
+**Live Interactive Web Viewers (GitHub Pages):**
+- **Department Photo Viewer:** [https://gord123098.github.io/department-photo/](https://gord123098.github.io/department-photo/)
+- **Multi-Scale Video Viewer:** [https://gord123098.github.io/department-photo-video/](https://gord123098.github.io/department-photo-video/)
 
 **Repositories (Auto-Synchronized):**
 - [https://github.com/Gord123098/department-photo](https://github.com/Gord123098/department-photo)
@@ -59,9 +60,10 @@ Interactive, multi-scale deep zoom viewer for the department camera array, regis
 
 ## Synchronized Multi-Scale Video Viewer
 
-A synchronized multi-scale video extension of this camera array across **153 continuous frames at native 24 fps** is available in a dedicated repository:
+A synchronized multi-scale video extension of this camera array across **153 continuous frames at native 24 fps** is available with interactive multi-tier deep zoom playback:
 
-- **Private Video Repository:** [https://github.com/Gord123098/department-photo-video](https://github.com/Gord123098/department-photo-video)
+- **Live Video Viewer:** [https://gord123098.github.io/department-photo-video/](https://gord123098.github.io/department-photo-video/)
+- **Video Repositories:** [https://github.com/Gord123098/department-photo-video](https://github.com/Gord123098/department-photo-video) · [https://github.com/arizonaCameraLab/department-photo-video](https://github.com/arizonaCameraLab/department-photo-video)
 
 ### Highlights & Architecture
 - **153 Successive Synchronized Frames:** Every high-resolution sensor advances by exactly 1 frame per step (spanning 6.38 seconds at cinema-standard 24 fps).
