@@ -57,6 +57,25 @@ Interactive, multi-scale deep zoom viewer for the department camera array, regis
 
 ---
 
+## Synchronized Multi-Scale Video Viewer
+
+A synchronized multi-scale video extension of this camera array across **153 continuous frames at native 24 fps** is available in a dedicated repository:
+
+- **Private Video Repository:** [https://github.com/Gord123098/department-photo-video](https://github.com/Gord123098/department-photo-video)
+
+### Highlights & Architecture
+- **153 Successive Synchronized Frames:** Every high-resolution sensor advances by exactly 1 frame per step (spanning 6.38 seconds at cinema-standard 24 fps).
+- **All-Intra Keyframe Seeking (`-g 1`):** Every frame across all video streams is an independent IDR keyframe, enabling zero-latency, frame-accurate timeline scrubbing and frame-by-frame stepping in the browser.
+- **Identical Registration & Fusion Pipeline:** Incorporates ALIKED + LightGlue + USAC_MAGSAC homographies, Lanczos-4 projective warping, DIS optical flow parallax refinement, and bilateral-filtered YCrCb pan-sharpened color fusion on every frame.
+- **Four Concurrent Video Tiers:**
+  - **Wide Base:** 2096×1600 color context panorama.
+  - **12 mm Stitched Tier:** 3072×1552 blended wide-telephoto tier.
+  - **Close Detail Array:** 3840×1712 4K color-fused stream.
+  - **Native Mono Array:** 3840×1712 4K monochrome stream.
+- **Local Playback & Streaming:** Powered by a lightweight Python HTTP range-request server (`serve_viewer.py`) supporting HTTP 206 Partial Content byte-range seeks at `http://127.0.0.1:8765/`.
+
+---
+
 ## Credits & Acknowledgments
 
 - **Heterogeneous Camera Array**: Based on the processing pipeline and camera registration architecture from the [Arizona Camera Lab](https://github.com/arizonaCameraLab).
